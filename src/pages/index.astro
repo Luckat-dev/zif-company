@@ -1,0 +1,254 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const nomCompany = "ZIF COMPANY";
+const slogan = "Centre de Formation & Services Techniques";
+
+const domaines = [
+  "Soudure & Construction métallique",
+  "Fabrication de meubles métalliques",
+  "Ajustage & Maintenance industrielle",
+  "Design & conception technique",
+  "Travaux pratiques & formation professionnelle"
+];
+
+const villes = ["Bukavu", "Goma", "Kinshasa"];
+---
+
+<BaseLayout title="Accueil">
+  <style>
+    /* Hero Section */
+    .hero {
+      margin-bottom: 80px;
+      padding: 20px 0 40px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: #3B82F6;
+      margin-bottom: 20px;
+      background: #EFF6FF;
+      padding: 6px 16px;
+      border-radius: 30px;
+      border: 1px solid #BFDBFE;
+    }
+
+    h1 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 800;
+      font-size: 4.5rem;
+      line-height: 1.15;
+      letter-spacing: -1.5px;
+      color: #0F172A;
+      margin-bottom: 20px;
+      max-width: 900px;
+    }
+
+    h1 .company-name {
+      font-weight: 900;
+      color: #0F172A;
+    }
+
+    .slogan {
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: #64748B;
+      max-width: 600px;
+      border-left: 5px solid #3B82F6;
+      padding-left: 25px;
+      margin-top: 15px;
+    }
+
+    /* Sections */
+    .section {
+      margin-bottom: 80px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .section-number {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: #3B82F6;
+      margin-right: 15px;
+      background: #EFF6FF;
+      padding: 5px 14px;
+      border-radius: 40px;
+    }
+
+    h2 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 2.2rem;
+      letter-spacing: -0.5px;
+      color: #0F172A;
+    }
+
+    /* Grille domaines */
+    .domaines-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
+
+    .domaine-card {
+      background: #FFFFFF;
+      padding: 35px 30px;
+      border-radius: 16px;
+      border: 1px solid #E5E7EB;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+      transition: all 0.25s ease;
+    }
+
+    .domaine-card:hover {
+      border-color: #3B82F6;
+      box-shadow: 0 12px 24px -8px rgba(59, 130, 246, 0.15);
+      transform: translateY(-3px);
+    }
+
+    /* Icône géométrique sobre (remplace l'emoji) */
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 24px;
+      background: #EFF6FF;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #3B82F6;
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
+    .domaine-card h3 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 1.25rem;
+      margin-bottom: 10px;
+      color: #0F172A;
+    }
+
+    .card-accent {
+      width: 40px;
+      height: 3px;
+      background: #3B82F6;
+      border-radius: 3px;
+      margin-top: 15px;
+    }
+
+    /* Contact bar */
+    .contact-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 60px;
+      padding-top: 35px;
+      border-top: 1px solid #E5E7EB;
+    }
+
+    .villes {
+      display: flex;
+      gap: 30px;
+    }
+
+    .ville-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+      color: #475569;
+      font-size: 1rem;
+    }
+
+    /* Puces géométriques pour les villes */
+    .ville-item::before {
+      content: "●";
+      color: #3B82F6;
+      font-size: 0.7rem;
+      opacity: 0.8;
+    }
+
+    .contact-info {
+      color: #475569;
+      font-weight: 500;
+    }
+
+    .cta-button {
+      background: #3B82F6;
+      color: white;
+      padding: 14px 32px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: background 0.2s ease;
+      border: none;
+    }
+
+    .cta-button:hover {
+      background: #2563EB;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 3rem;
+      }
+      .contact-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 25px;
+      }
+      .villes {
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+    }
+  </style>
+
+  <div class="hero">
+    <span class="hero-badge">RDC · EXCELLENCE TECHNIQUE</span>
+    <h1><span class="company-name">{nomCompany}</span></h1>
+    <p class="slogan">{slogan}</p>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">01</span>
+      <h2>Nos domaines d'expertise</h2>
+    </div>
+    
+    <div class="domaines-grid">
+      {domaines.map((domaine, index) => (
+        <div class="domaine-card">
+          <div class="card-icon">{String(index + 1).padStart(2, '0')}</div>
+          <h3>{domaine}</h3>
+          <div class="card-accent"></div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div class="contact-bar">
+    <div class="villes">
+      {villes.map(ville => (
+        <span class="ville-item">{ville}</span>
+      ))}
+    </div>
+    <div class="contact-info">
+      +243 851 954 930 · zifcompany@email.com
+    </div>
+    <a href="/contact" class="cta-button">Nous contacter</a>
+  </div>
+</BaseLayout>

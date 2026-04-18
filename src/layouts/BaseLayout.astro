@@ -1,0 +1,125 @@
+---
+// src/layouts/BaseLayout.astro
+export interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "ZIF COMPANY - Centre de Formation & Services Techniques en RDC" } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content={description}>
+    <title>{title} | ZIF COMPANY</title>
+    
+    <!-- Polices : Inter pour le texte, Poppins pour les titres (style Y2mate) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style is:global>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FFFFFF;
+            color: #1A1A2E;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 40px;
+        }
+
+        /* Style du logo */
+        .logo-img {
+            height: 50px;
+            width: auto;
+        }
+
+        .logo-text {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 2rem;
+            letter-spacing: -0.5px;
+            color: #1A1A2E;
+        }
+
+        .logo-text span {
+            color: #3B82F6;
+        }
+
+        /* Header avec logo */
+        .site-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 0;
+            margin-bottom: 40px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+        }
+
+        .nav-links a {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            color: #4B5563;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #3B82F6;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 20px;
+            }
+            .site-header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            .nav-links {
+                gap: 25px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="site-header">
+            <div class="logo">
+                <!-- Si vous avez un logo, remplacez la div par <img> -->
+                <div class="logo-text">ZIF <span>COMPANY</span></div>
+            </div>
+            <nav class="nav-links">
+                <a href="/">Accueil</a>
+                <a href="/equipe">Équipe</a>
+                <a href="/projets">Projets</a>
+                <a href="/contact">Contact</a>
+            </nav>
+        </header>
+        <main>
+            <slot />
+        </main>
+    </div>
+</body>
+</html>
