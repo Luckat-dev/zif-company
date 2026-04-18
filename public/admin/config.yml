@@ -1,6 +1,11 @@
+local_backend: false
+
 backend:
   name: git-gateway
   branch: main
+
+# ... le reste du fichier reste identique
+
 
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
