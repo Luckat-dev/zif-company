@@ -124,17 +124,28 @@ const { title, description = "ZIF COMPANY - Centre de Formation & Services Techn
 	<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script>
   if (window.netlifyIdentity) {
-    window.netlifyIdentity.on("init", user => {
-      if (!user) {
-        window.netlifyIdentity.on("login", () => {
-          document.location.href = "/admin/";
-        });
-      }
+    // Rediriger vers /admin/ après connexion
+    window.netlifyIdentity.on("login", () => {
+      document.location.href = "/admin/";
     });
     
-    // Gérer la redirection après confirmation d'email
+    // Rediriger vers /admin/ après inscription
     window.netlifyIdentity.on("signup", () => {
       document.location.href = "/admin/";
+    });
+
+    // Initialiser le widget
+    window.netlifyIdentity.init();
+
+    // Forcer l'ouverture de la pop-up si un token d'invitation est présent
+    window.netlifyIdentity.on("init", user => {
+      if (!user) {
+        // Vérifier si l'URL contient un token d'invitation
+        const hash = window.location.hash;
+        if (hash.includes("invite_token") || hash.includes("recovery_token") || hash.includes("confirmation_token")) {
+          window.netlifyIdentity.open("login");
+        }
+      }
     });
   }
 </script>
