@@ -16,7 +16,7 @@ const { title, description = "ZIF COMPANY - Centre de Formation & Services Techn
     <meta name="description" content={description}>
     <title>{title} | ZIF COMPANY</title>
     
-    <!-- Polices : Inter pour le texte, Poppins pour les titres (style Y2mate) -->
+    <!-- Polices : Inter pour le texte, Poppins pour les titres -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -42,12 +42,6 @@ const { title, description = "ZIF COMPANY - Centre de Formation & Services Techn
             padding: 40px 40px;
         }
 
-        /* Style du logo */
-        .logo-img {
-            height: 50px;
-            width: auto;
-        }
-
         .logo-text {
             font-family: 'Poppins', sans-serif;
             font-weight: 800;
@@ -60,7 +54,6 @@ const { title, description = "ZIF COMPANY - Centre de Formation & Services Techn
             color: #3B82F6;
         }
 
-        /* Header avec logo */
         .site-header {
             display: flex;
             align-items: center;
@@ -107,7 +100,6 @@ const { title, description = "ZIF COMPANY - Centre de Formation & Services Techn
     <div class="container">
         <header class="site-header">
             <div class="logo">
-                <!-- Si vous avez un logo, remplacez la div par <img> -->
                 <div class="logo-text">ZIF <span>COMPANY</span></div>
             </div>
             <nav class="nav-links">
@@ -121,33 +113,23 @@ const { title, description = "ZIF COMPANY - Centre de Formation & Services Techn
             <slot />
         </main>
     </div>
-	<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-<script>
-  if (window.netlifyIdentity) {
-    // Rediriger vers /admin/ après connexion
-    window.netlifyIdentity.on("login", () => {
-      document.location.href = "/admin/";
-    });
-    
-    // Rediriger vers /admin/ après inscription
-    window.netlifyIdentity.on("signup", () => {
-      document.location.href = "/admin/";
-    });
 
-    // Initialiser le widget
-    window.netlifyIdentity.init();
-
-    // Forcer l'ouverture de la pop-up si un token d'invitation est présent
-    window.netlifyIdentity.on("init", user => {
-      if (!user) {
-        // Vérifier si l'URL contient un token d'invitation
-        const hash = window.location.hash;
-        if (hash.includes("invite_token") || hash.includes("recovery_token") || hash.includes("confirmation_token")) {
-          window.netlifyIdentity.open("login");
-        }
+    <!-- Widget Netlify Identity -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <script>
+      if (window.netlifyIdentity) {
+        window.netlifyIdentity.on("init", user => {
+          if (!user) {
+            window.netlifyIdentity.on("login", () => {
+              document.location.href = "/admin/";
+            });
+            window.netlifyIdentity.on("signup", () => {
+              document.location.href = "/admin/";
+            });
+          }
+        });
+        window.netlifyIdentity.init();
       }
-    });
-  }
-</script>
+    </script>
 </body>
 </html>
