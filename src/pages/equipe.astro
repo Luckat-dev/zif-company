@@ -1,0 +1,486 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Chargement dynamique de l'équipe
+const allMembres = import.meta.glob('../content/equipe/*.md', { eager: true });
+const membres = Object.values(allMembres)
+  .sort((a, b) => (a.frontmatter.ordre || 99) - (b.frontmatter.ordre || 99));
+
+// Chargement dynamique de la photo hero
+const settingsFiles = import.meta.glob('../content/settings/*.md', { eager: true });
+const equipeSettings = settingsFiles['../content/settings/equipe.md'] || { frontmatter: { hero_image: '' } };
+const heroImage = equipeSettings.frontmatter.hero_image || '';
+const hasHeroImage = heroImage !== '';
+---
+<BaseLayout title="Notre Équipe">
+  <style>
+    :root {
+      --accent-primary: #3B82F6;
+      --accent-secondary: #1D4ED8;
+    }
+
+    /* Hero */
+    .equipe-hero {
+      position: relative;
+      padding: 100px 0;
+      text-align: center;
+      color: white;
+      margin-top: -40px;
+      margin-bottom: 60px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+    }
+
+    /* Fond avec photo floue */
+    .hero-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 0;
+    }
+
+    .hero-background::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+      z-index: 1;
+    }
+
+    .hero-background-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-size: cover;
+      background-position: center;
+      filter: blur(8px);
+      transform: scale(1.05);
+      z-index: 0;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.6);
+      z-index: 1;
+    }
+
+    .equipe-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5L55 50H5L30 5z' fill='rgba(59,130,246,0.02)'/%3E%3C/svg%3E");
+      opacity: 0.3;
+      z-index: 2;
+    }
+
+    .equipe-hero-content {
+      position: relative;
+      z-index: 3;
+    }
+
+    .equipe-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(59, 130, 246, 0.12);
+      padding: 6px 20px;
+      border-radius: 50px;
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      margin-bottom: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+    }
+
+    .equipe-badge svg {
+      width: 12px;
+      height: 12px;
+      fill: var(--accent-primary);
+    }
+
+    .equipe-hero h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 800;
+      margin-bottom: 15px;
+    }
+
+    .equipe-hero p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+
+    /* Intro */
+    .equipe-intro {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 50px;
+    }
+
+    .equipe-intro h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 15px;
+    }
+
+    .equipe-intro p {
+      color: #64748B;
+      line-height: 1.7;
+    }
+
+    /* Grille */
+    .equipe-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+      margin-bottom: 60px;
+    }
+
+    .membre-card {
+      background: #FFFFFF;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      border: 1px solid #EEF2F6;
+      transition: all 0.25s ease;
+    }
+
+    .membre-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 15px 40px rgba(59, 130, 246, 0.1);
+      border-color: var(--accent-primary);
+    }
+
+    .membre-image {
+      width: 100%;
+      height: 280px;
+      overflow: hidden;
+      background: #F1F5F9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .membre-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .membre-image-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #94A3B8;
+      width: 100%;
+      height: 100%;
+    }
+
+    .membre-image-placeholder svg {
+      width: 70px;
+      height: 70px;
+      fill: #CBD5E1;
+      margin-bottom: 15px;
+    }
+
+    .membre-image-placeholder span {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #64748B;
+    }
+
+    .membre-content {
+      padding: 22px;
+    }
+
+    .membre-nom {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 6px;
+    }
+
+    .membre-poste {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent-primary);
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #F1F5F9;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .membre-bio {
+      color: #64748B;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+
+    /* Badges */
+    .membre-forces {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
+
+    .force-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #EFF6FF;
+      padding: 3px 10px;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--accent-primary);
+      border: 1px solid #BFDBFE;
+    }
+
+    .force-badge svg {
+      width: 10px;
+      height: 10px;
+      fill: var(--accent-primary);
+    }
+
+    /* Réseaux sociaux */
+    .membre-social {
+      display: flex;
+      gap: 10px;
+      padding-top: 12px;
+      border-top: 1px solid #F1F5F9;
+    }
+
+    .social-icon {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #F8FAFC;
+      border-radius: 8px;
+      color: #64748B;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .social-icon svg {
+      width: 15px;
+      height: 15px;
+      fill: currentColor;
+    }
+
+    .social-icon:hover {
+      background: var(--accent-primary);
+      color: white;
+    }
+
+    /* Section Valeurs */
+    .valeurs-section {
+      background: #F8FAFC;
+      padding: 60px 0;
+      margin-top: 40px;
+      border-radius: 30px 30px 0 0;
+    }
+
+    .valeurs-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .valeurs-header h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 10px;
+    }
+
+    .valeurs-header p {
+      color: #64748B;
+    }
+
+    .valeurs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+    }
+
+    .valeur-card {
+      background: #FFFFFF;
+      padding: 30px 25px;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+      border: 1px solid #EEF2F6;
+    }
+
+    .valeur-icon {
+      width: 50px;
+      height: 50px;
+      margin: 0 auto 18px;
+      background: linear-gradient(135deg, #DBEAFE, #BFDBFE);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .valeur-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--accent-primary);
+    }
+
+    .valeur-card h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #0F172A;
+    }
+
+    .valeur-card p {
+      color: #64748B;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 768px) {
+      .equipe-hero h1 { font-size: 2.5rem; }
+      .valeurs-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+
+  <!-- Hero -->
+  <section class="equipe-hero">
+    {hasHeroImage && (
+      <>
+        <div class="hero-background-image" style={`background-image: url('${heroImage}')`}></div>
+        <div class="hero-overlay"></div>
+      </>
+    )}
+    {!hasHeroImage && <div class="hero-background"></div>}
+    
+    <div class="container">
+      <div class="equipe-hero-content">
+        <div class="equipe-badge">
+          <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          <span>NOTRE FORCE</span>
+          <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        </div>
+        <h1>Notre Équipe</h1>
+        <p>Des professionnels passionnés à votre service</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Intro -->
+  <div class="container">
+    <div class="equipe-intro">
+      <h2>Des experts qualifiés</h2>
+      <p>Chaque membre de ZIF COMPANY apporte son savoir-faire unique pour garantir l'excellence de vos projets.</p>
+    </div>
+  </div>
+
+  <!-- Grille -->
+  <div class="container">
+    <div class="equipe-grid">
+      {membres.map(membre => (
+        <div class="membre-card">
+          <div class="membre-image">
+            {membre.frontmatter.image && membre.frontmatter.image !== "" ? (
+              <img src={membre.frontmatter.image} alt={membre.frontmatter.title} loading="lazy">
+            ) : (
+              <div class="membre-image-placeholder">
+                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                <span>Photo à venir</span>
+              </div>
+            )}
+          </div>
+          <div class="membre-content">
+            <h3 class="membre-nom">{membre.frontmatter.title}</h3>
+            <div class="membre-poste">{membre.frontmatter.poste}</div>
+            <p class="membre-bio">{membre.frontmatter.bio}</p>
+            <div class="membre-forces">
+              <span class="force-badge">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                Expert
+              </span>
+              <span class="force-badge">
+                <svg viewBox="0 0 24 24"><path d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.59-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"/></svg>
+                Qualifié
+              </span>
+            </div>
+            <div class="membre-social">
+              <a href="#" class="social-icon" title="WhatsApp">
+                <svg viewBox="0 0 24 24">
+                  <path d="M19.077 4.928C17.191 3.041 14.683 2 12.006 2 6.498 2 2.017 6.482 2.002 11.99c0 1.762.458 3.482 1.33 4.998L2 22l5.232-1.372a9.97 9.97 0 0 0 4.764 1.215h.004c5.507 0 9.988-4.48 10-9.988.006-2.67-1.03-5.178-2.923-7.067zm-7.07 15.36h-.003a8.3 8.3 0 0 1-4.231-1.158l-.303-.18-3.105.814.83-3.026-.2-.317a8.257 8.257 0 0 1-1.268-4.425c.003-4.559 3.715-8.268 8.28-8.268a8.23 8.23 0 0 1 5.857 2.424 8.224 8.224 0 0 1 2.425 5.851c-.003 4.563-3.718 8.275-8.282 8.278zm4.54-6.198c-.248-.124-1.47-.726-1.698-.809-.228-.083-.394-.124-.56.124-.165.248-.644.809-.79.975-.145.165-.29.186-.538.062-.25-.124-1.05-.387-2-1.234-.74-.66-1.24-1.475-1.384-1.724-.145-.248-.015-.383.109-.507.111-.111.248-.29.372-.435.124-.145.165-.248.248-.414.083-.165.041-.31-.021-.434-.062-.124-.56-1.347-.767-1.844-.201-.483-.406-.417-.56-.425-.143-.007-.31-.009-.476-.009a.914.914 0 0 0-.663.31c-.228.248-.87.85-.87 2.073 0 1.223.89 2.405 1.015 2.57.124.166 1.753 2.676 4.246 3.753.593.256 1.056.409 1.417.524.595.189 1.137.162 1.565.098.477-.071 1.47-.6 1.677-1.18.207-.58.207-1.077.145-1.18-.062-.104-.228-.166-.476-.29z"/>
+                </svg>
+              </a>
+              <a href="#" class="social-icon" title="LinkedIn">
+                <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68zm1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+              </a>
+              <a href="#" class="social-icon" title="Email">
+                <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Valeurs -->
+  <section class="valeurs-section">
+    <div class="container">
+      <div class="valeurs-header">
+        <h2>Nos valeurs</h2>
+        <p>Ce qui guide notre travail au quotidien</p>
+      </div>
+      <div class="valeurs-grid">
+        <div class="valeur-card">
+          <div class="valeur-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"/></svg>
+          </div>
+          <h3>Excellence</h3>
+          <p>La perfection dans chaque détail, chaque soudure, chaque finition.</p>
+        </div>
+        <div class="valeur-card">
+          <div class="valeur-icon">
+            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm8 10h-2v-2c0-2.21-1.79-4-4-4s-4 1.79-4 4v2H4v-2c0-2.21-1.79-4-4-4s-4 1.79-4 4v2h24v-2z"/></svg>
+          </div>
+          <h3>Esprit d'équipe</h3>
+          <p>Collaboration et partage des compétences au cœur de notre réussite.</p>
+        </div>
+        <div class="valeur-card">
+          <div class="valeur-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          </div>
+          <h3>Engagement</h3>
+          <p>Respect des délais, des budgets et de la qualité promise.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

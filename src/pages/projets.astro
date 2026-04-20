@@ -1,0 +1,348 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Chargement des projets
+const allProjets = import.meta.glob('../content/projets/*.md', { eager: true });
+const projets = Object.values(allProjets)
+  .sort((a, b) => new Date(b.frontmatter.date) - new Date(a.frontmatter.date));
+
+// Chargement des paramètres
+const settingsFiles = import.meta.glob('../content/settings/*.md', { eager: true });
+const projetsSettings = settingsFiles['../content/settings/projets.md'] || { 
+  frontmatter: { 
+    hero_title: 'Nos Réalisations',
+    hero_subtitle: 'Découvrez l\'excellence de notre savoir-faire',
+    intro_title: 'Des projets qui parlent d\'eux-mêmes',
+    intro_text: 'Chaque réalisation de ZIF COMPANY est le fruit d\'un travail minutieux, alliant expertise technique et passion du métal.'
+  } 
+};
+
+const { hero_title, hero_subtitle, intro_title, intro_text } = projetsSettings.frontmatter;
+---
+
+<BaseLayout title="Projets">
+  <style>
+    :root {
+      --accent-primary: #3B82F6;
+      --accent-secondary: #1D4ED8;
+    }
+
+    /* Hero */
+    .projets-hero {
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+      padding: 80px 0;
+      text-align: center;
+      color: white;
+      margin-top: -40px;
+      margin-bottom: 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .projets-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5L55 50H5L30 5z' fill='rgba(59,130,246,0.03)'/%3E%3C/svg%3E");
+      opacity: 0.3;
+    }
+
+    .projets-hero-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(59, 130, 246, 0.12);
+      padding: 6px 20px;
+      border-radius: 50px;
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      margin-bottom: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+    }
+
+    .hero-badge svg {
+      width: 12px;
+      height: 12px;
+      fill: var(--accent-primary);
+    }
+
+    .projets-hero h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 800;
+      margin-bottom: 15px;
+    }
+
+    .projets-hero p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+
+    /* Intro */
+    .projets-intro {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto 50px;
+    }
+
+    .projets-intro h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 20px;
+    }
+
+    .projets-intro p {
+      color: #64748B;
+      line-height: 1.8;
+      font-size: 1.1rem;
+    }
+
+    /* Stats rapides */
+    .stats-mini {
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      margin-bottom: 50px;
+      padding: 30px;
+      background: #F8FAFC;
+      border-radius: 20px;
+    }
+
+    .stat-mini-item {
+      text-align: center;
+    }
+
+    .stat-mini-value {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--accent-primary);
+    }
+
+    .stat-mini-label {
+      font-size: 0.9rem;
+      color: #64748B;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Grille */
+    .projets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 30px;
+      margin-bottom: 60px;
+    }
+
+    .projet-card {
+      background: #FFFFFF;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      border: 1px solid #EEF2F6;
+      transition: all 0.25s ease;
+    }
+
+    .projet-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(59, 130, 246, 0.12);
+      border-color: var(--accent-primary);
+    }
+
+    .projet-image {
+      width: 100%;
+      height: 260px;
+      overflow: hidden;
+      background: #F1F5F9;
+      position: relative;
+    }
+
+    .projet-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .projet-card:hover .projet-image img {
+      transform: scale(1.05);
+    }
+
+    .projet-categorie {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: var(--accent-primary);
+      color: white;
+      padding: 5px 12px;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .projet-content {
+      padding: 25px;
+    }
+
+    .projet-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 8px;
+    }
+
+    .projet-meta {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #F1F5F9;
+    }
+
+    .projet-ville {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.8rem;
+      color: #64748B;
+    }
+
+    .projet-ville svg {
+      width: 14px;
+      height: 14px;
+      fill: var(--accent-primary);
+    }
+
+    .projet-annee {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent-primary);
+    }
+
+    .projet-description {
+      color: #64748B;
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    /* Message si aucun projet */
+    .no-projets {
+      text-align: center;
+      padding: 60px;
+      background: #F8FAFC;
+      border-radius: 20px;
+      color: #64748B;
+    }
+
+    .no-projets svg {
+      width: 60px;
+      height: 60px;
+      fill: #CBD5E1;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .projets-hero h1 { font-size: 2.5rem; }
+      .stats-mini { flex-wrap: wrap; gap: 30px; }
+      .projets-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+
+  <!-- Hero -->
+  <section class="projets-hero">
+    <div class="container">
+      <div class="projets-hero-content">
+        <div class="hero-badge">
+          <svg viewBox="0 0 24 24"><path d="M21 6h-7.59l3.29-3.29L16 2l-4 4-4-4-.71.71L10.59 6H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z"/></svg>
+          <span>PORTFOLIO</span>
+          <svg viewBox="0 0 24 24"><path d="M21 6h-7.59l3.29-3.29L16 2l-4 4-4-4-.71.71L10.59 6H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z"/></svg>
+        </div>
+        <h1>{hero_title}</h1>
+        <p>{hero_subtitle}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Intro -->
+  <div class="container">
+    <div class="projets-intro">
+      <h2>{intro_title}</h2>
+      <p>{intro_text}</p>
+    </div>
+  </div>
+
+  <!-- Stats mini -->
+  <div class="container">
+    <div class="stats-mini">
+      <div class="stat-mini-item">
+        <div class="stat-mini-value">{projets.length}</div>
+        <div class="stat-mini-label">Projets réalisés</div>
+      </div>
+      <div class="stat-mini-item">
+        <div class="stat-mini-value">
+          {[...new Set(projets.map(p => p.frontmatter.categorie))].length}
+        </div>
+        <div class="stat-mini-label">Catégories</div>
+      </div>
+      <div class="stat-mini-item">
+        <div class="stat-mini-value">
+          {[...new Set(projets.map(p => p.frontmatter.ville))].length}
+        </div>
+        <div class="stat-mini-label">Villes d'intervention</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grille Projets -->
+  <div class="container">
+    {projets.length > 0 ? (
+      <div class="projets-grid">
+        {projets.map(projet => (
+          <div class="projet-card">
+            <div class="projet-image">
+              {projet.frontmatter.image && (
+                <img src={projet.frontmatter.image} alt={projet.frontmatter.title} loading="lazy">
+              )}
+              <span class="projet-categorie">{projet.frontmatter.categorie}</span>
+            </div>
+            <div class="projet-content">
+              <h3 class="projet-title">{projet.frontmatter.title}</h3>
+              <div class="projet-meta">
+                <span class="projet-ville">
+                  <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+                  {projet.frontmatter.ville}
+                </span>
+                <span class="projet-annee">{projet.frontmatter.annee}</span>
+              </div>
+              <p class="projet-description">{projet.frontmatter.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <div class="no-projets">
+        <svg viewBox="0 0 24 24"><path d="M21 6h-7.59l3.29-3.29L16 2l-4 4-4-4-.71.71L10.59 6H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z"/></svg>
+        <h3>Aucun projet pour le moment</h3>
+        <p>Revenez bientôt pour découvrir nos réalisations !</p>
+      </div>
+    )}
+  </div>
+
+  <!-- Espacement -->
+  <div style="padding: 40px 0;"></div>
+</BaseLayout>

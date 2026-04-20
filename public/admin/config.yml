@@ -4,9 +4,6 @@ backend:
   name: git-gateway
   branch: main
 
-# ... le reste du fichier reste identique
-
-
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
 
@@ -15,7 +12,7 @@ display_url: https://neon-profiterole-37ad1d.netlify.app
 
 collections:
   - name: "pages"
-    label: "Pages du site"
+    label: "📄 Pages du site"
     files:
       - label: "Page d'accueil"
         name: "accueil"
@@ -38,21 +35,53 @@ collections:
           - { label: "Email", name: "email", widget: "string" }
 
   - name: "equipe"
-    label: "Équipe"
+    label: "👨‍🏭 Équipe"
     folder: "src/content/equipe"
     create: true
+    slug: "{{slug}}"
     fields:
-      - { label: "Nom", name: "title", widget: "string" }
+      - { label: "Nom complet", name: "title", widget: "string" }
+      - { label: "Poste", name: "poste", widget: "string" }
+      - { label: "Biographie", name: "bio", widget: "text" }
       - { label: "Photo", name: "image", widget: "image", required: false }
-      - { label: "Spécialité", name: "specialite", widget: "string" }
-      - { label: "Ville", name: "ville", widget: "select", options: ["Bukavu", "Goma", "Kinshasa"] }
+      - { label: "Ordre d'affichage", name: "ordre", widget: "number", default: 99, value_type: "int" }
 
   - name: "projets"
-    label: "Projets"
+    label: "🛠️ Projets"
     folder: "src/content/projets"
     create: true
+    slug: "{{slug}}"
     fields:
-      - { label: "Titre", name: "title", widget: "string" }
-      - { label: "Photo", name: "image", widget: "image" }
-      - { label: "Catégorie", name: "categorie", widget: "select", options: ["Soudure", "Mobilier", "Formation"] }
+      - { label: "Titre du projet", name: "title", widget: "string" }
+      - { label: "Photo principale", name: "image", widget: "image" }
+      - { label: "Catégorie", name: "categorie", widget: "select", options: ["Soudure & Construction", "Fabrication de meubles", "Ajustage & Maintenance", "Design & Conception", "Formation", "Création Artistique"] }
       - { label: "Ville", name: "ville", widget: "select", options: ["Bukavu", "Goma", "Kinshasa"] }
+      - { label: "Année", name: "annee", widget: "string", default: "2025" }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Date (pour le tri)", name: "date", widget: "datetime", default: "2025-01-01", format: "YYYY-MM-DD" }
+
+  - name: "settings"
+    label: "⚙️ Paramètres du site"
+    files:
+      - label: "Page Équipe"
+        name: "equipe"
+        file: "src/content/settings/equipe.md"
+        fields:
+          - { label: "Photo de l'équipe (fond du hero)", name: "hero_image", widget: "image", required: false }
+            - name: "settings"
+    label: "⚙️ Paramètres du site"
+    files:
+      - label: "Page Équipe"
+        name: "equipe"
+        file: "src/content/settings/equipe.md"
+        fields:
+          - { label: "Photo de l'équipe (fond du hero)", name: "hero_image", widget: "image", required: false }
+      
+      - label: "Page Projets"
+        name: "projets"
+        file: "src/content/settings/projets.md"
+        fields:
+          - { label: "Titre du hero", name: "hero_title", widget: "string", default: "Nos Réalisations" }
+          - { label: "Sous-titre du hero", name: "hero_subtitle", widget: "string", default: "Découvrez l'excellence de notre savoir-faire" }
+          - { label: "Titre de l'intro", name: "intro_title", widget: "string", default: "Des projets qui parlent d'eux-mêmes" }
+          - { label: "Texte d'introduction", name: "intro_text", widget: "text", default: "Chaque réalisation de ZIF COMPANY est le fruit d'un travail minutieux, alliant expertise technique et passion du métal." }

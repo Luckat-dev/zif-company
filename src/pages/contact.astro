@@ -1,0 +1,672 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Photos du carousel (à changer manuellement)
+const carouselSlides = [
+  {
+    image: "/images/carousel/slide1.jpg",
+    title: "ZIF COMPANY",
+    subtitle: "Votre partenaire en soudure et formation"
+  },
+  {
+    image: "/images/carousel/slide2.jpg",
+    title: "Expertise & Qualité",
+    subtitle: "Plus de 10 ans d'expérience à votre service"
+  },
+  {
+    image: "/images/carousel/slide3.jpg",
+    title: "Nous contacter",
+    subtitle: "Une équipe à votre écoute"
+  }
+];
+
+// Coordonnées
+const contactInfo = {
+  phone: "+243 851 954 930",
+  email: "zifcompany@email.com",
+  villes: [
+    { nom: "Bukavu", adresse: "Avenue Patrice Lumumba, 123" },
+    { nom: "Goma", adresse: "Boulevard Kanyamuhanga, 45" },
+    { nom: "Kinshasa", adresse: "Avenue du Commerce, 78" }
+  ],
+  horaires: [
+    { jour: "Lundi - Vendredi", heures: "8h00 - 18h00" },
+    { jour: "Samedi", heures: "8h00 - 15h00" },
+    { jour: "Dimanche", heures: "Fermé" }
+  ]
+};
+
+// Formations
+const formations = [
+  {
+    titre: "Soudure à l'arc (MMA)",
+    duree: "3 mois",
+    niveau: "Débutant à Avancé",
+    description: "Maîtrisez les techniques de soudure à l'arc électrique. Formation pratique à 80%."
+  },
+  {
+    titre: "Soudure MIG/MAG",
+    duree: "2 mois",
+    niveau: "Intermédiaire",
+    description: "Apprenez la soudure semi-automatique pour les travaux de précision et de production."
+  },
+  {
+    titre: "Soudure TIG",
+    duree: "3 mois",
+    niveau: "Avancé",
+    description: "Technique de soudure de haute précision pour l'inox et l'aluminium."
+  },
+  {
+    titre: "Lecture de plans",
+    duree: "1 mois",
+    niveau: "Tous niveaux",
+    description: "Apprenez à lire et interpréter les plans techniques en construction métallique."
+  }
+];
+---
+
+<BaseLayout title="Contact">
+  <style>
+    :root {
+      --accent-primary: #3B82F6;
+      --accent-secondary: #1D4ED8;
+    }
+
+    /* ===== CAROUSEL HERO ===== */
+    .carousel-hero {
+      position: relative;
+      height: 500px;
+      overflow: hidden;
+      margin-top: -40px;
+      margin-bottom: 60px;
+    }
+
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .carousel-slides {
+      display: flex;
+      width: 300%;
+      height: 100%;
+      animation: slideAnimation 15s infinite;
+    }
+
+    .carousel-slide {
+      width: 33.333%;
+      height: 100%;
+      position: relative;
+    }
+
+    .carousel-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .carousel-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+    }
+
+    .carousel-content h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 800;
+      margin-bottom: 15px;
+      text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .carousel-content p {
+      font-size: 1.3rem;
+      opacity: 0.95;
+    }
+
+    .carousel-nav {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 10;
+    }
+
+    .carousel-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+      border: 2px solid rgba(255,255,255,0.6);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .carousel-dot.active {
+      background: white;
+      transform: scale(1.2);
+    }
+
+    @keyframes slideAnimation {
+      0%, 28% { transform: translateX(0); }
+      33%, 61% { transform: translateX(-33.333%); }
+      66%, 94% { transform: translateX(-66.666%); }
+      100% { transform: translateX(0); }
+    }
+
+    /* ===== CONTACT INFO SECTION ===== */
+    .contact-section {
+      padding: 20px 0 60px;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 50px;
+      margin-bottom: 60px;
+    }
+
+    /* Carte info */
+    .info-card {
+      background: #FFFFFF;
+      padding: 35px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      border: 1px solid #EEF2F6;
+    }
+
+    .info-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    .info-icon {
+      width: 45px;
+      height: 45px;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .info-icon svg {
+      width: 22px;
+      height: 22px;
+      fill: white;
+    }
+
+    .info-header h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #0F172A;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .contact-item svg {
+      width: 20px;
+      height: 20px;
+      fill: var(--accent-primary);
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+
+    .contact-item-content h4 {
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 5px;
+    }
+
+    .contact-item-content p {
+      color: #64748B;
+      line-height: 1.6;
+    }
+
+    /* Horaires */
+    .horaires-list {
+      margin-top: 15px;
+    }
+
+    .horaire-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #F1F5F9;
+    }
+
+    .horaire-item:last-child {
+      border-bottom: none;
+    }
+
+    .horaire-jour {
+      font-weight: 600;
+      color: #0F172A;
+    }
+
+    .horaire-heures {
+      color: var(--accent-primary);
+      font-weight: 500;
+    }
+
+    /* Formulaire */
+    .form-card {
+      background: #FFFFFF;
+      padding: 35px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      border: 1px solid #EEF2F6;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      color: #0F172A;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      transition: all 0.2s;
+      background: #F8FAFC;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+    }
+    
+    .btn-submit:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    #form-status {
+      display: none;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    /* ===== SECTION FORMATIONS ===== */
+    .formations-section {
+      padding: 60px 0;
+      background: #F8FAFC;
+      border-radius: 30px 30px 0 0;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .section-header h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 10px;
+    }
+
+    .section-header p {
+      color: #64748B;
+      font-size: 1.1rem;
+    }
+
+    .formations-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
+
+    .formation-card {
+      background: #FFFFFF;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+      border: 1px solid #EEF2F6;
+      transition: all 0.25s;
+    }
+
+    .formation-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 30px rgba(59, 130, 246, 0.08);
+      border-color: var(--accent-primary);
+    }
+
+    .formation-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #DBEAFE, #BFDBFE);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .formation-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--accent-primary);
+    }
+
+    .formation-card h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 12px;
+    }
+
+    .formation-meta {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+      font-size: 0.8rem;
+      color: #64748B;
+    }
+
+    .formation-meta span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .formation-meta svg {
+      width: 14px;
+      height: 14px;
+      fill: var(--accent-primary);
+    }
+
+    .formation-card p {
+      color: #64748B;
+      line-height: 1.6;
+      font-size: 0.9rem;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .carousel-hero {
+        height: 400px;
+      }
+      .carousel-content h2 {
+        font-size: 2.2rem;
+      }
+      .carousel-content p {
+        font-size: 1rem;
+      }
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <!-- CAROUSEL HERO -->
+  <section class="carousel-hero">
+    <div class="carousel-container">
+      <div class="carousel-slides">
+        {carouselSlides.map(slide => (
+          <div class="carousel-slide">
+            <img src={slide.image} alt={slide.title}>
+            <div class="carousel-overlay">
+              <div class="carousel-content">
+                <h2>{slide.title}</h2>
+                <p>{slide.subtitle}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div class="carousel-nav">
+        <span class="carousel-dot active"></span>
+        <span class="carousel-dot"></span>
+        <span class="carousel-dot"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT SECTION -->
+  <div class="container">
+    <div class="contact-section">
+      <div class="contact-grid">
+        <!-- Informations de contact -->
+        <div class="info-card">
+          <div class="info-header">
+            <div class="info-icon">
+              <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/></svg>
+            </div>
+            <h3>Coordonnées</h3>
+          </div>
+          
+          <div class="contact-item">
+            <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+            <div class="contact-item-content">
+              <h4>Téléphone</h4>
+              <p>{contactInfo.phone}</p>
+            </div>
+          </div>
+          
+          <div class="contact-item">
+            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            <div class="contact-item-content">
+              <h4>Email</h4>
+              <p>{contactInfo.email}</p>
+            </div>
+          </div>
+          
+          <div class="contact-item">
+            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+            <div class="contact-item-content">
+              <h4>Adresses</h4>
+              {contactInfo.villes.map(ville => (
+                <p><strong>{ville.nom}</strong> - {ville.adresse}</p>
+              ))}
+            </div>
+          </div>
+
+          <div style="margin-top: 25px;">
+            <div class="info-header">
+              <div class="info-icon">
+                <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg>
+              </div>
+              <h3>Horaires d'ouverture</h3>
+            </div>
+            <div class="horaires-list">
+              {contactInfo.horaires.map(h => (
+                <div class="horaire-item">
+                  <span class="horaire-jour">{h.jour}</span>
+                  <span class="horaire-heures">{h.heures}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <!-- Formulaire de contact -->
+        <div class="form-card">
+          <div class="info-header">
+            <div class="info-icon">
+              <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/></svg>
+            </div>
+            <h3>Envoyez-nous un message</h3>
+          </div>
+          
+          <div id="form-status"></div>
+          
+          <form id="contact-form">
+            <div class="form-group">
+              <label>Nom complet *</label>
+              <input type="text" name="from_name" id="from_name" placeholder="Votre nom" required>
+            </div>
+            
+            <div class="form-group">
+              <label>Email *</label>
+              <input type="email" name="reply_to" id="reply_to" placeholder="votre@email.com" required>
+            </div>
+            
+            <div class="form-group">
+              <label>Téléphone</label>
+              <input type="tel" name="telephone" id="telephone" placeholder="Votre numéro">
+            </div>
+            
+            <div class="form-group">
+              <label>Sujet *</label>
+              <select name="sujet" id="sujet" required>
+                <option value="">Sélectionnez un sujet</option>
+                <option value="Demande de devis">Demande de devis</option>
+                <option value="Formation">Formation</option>
+                <option value="Renseignement">Renseignement</option>
+                <option value="Autre">Autre</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>Message *</label>
+              <textarea name="message" id="message" rows="5" placeholder="Votre message..." required></textarea>
+            </div>
+            
+            <button type="submit" class="btn-submit" id="submit-btn">Envoyer le message</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION FORMATIONS -->
+  <section class="formations-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Nos formations professionnelles</h2>
+        <p>Développez vos compétences avec nos formations certifiantes</p>
+      </div>
+      
+      <div class="formations-grid">
+        {formations.map(formation => (
+          <div class="formation-card">
+            <div class="formation-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg>
+            </div>
+            <h3>{formation.titre}</h3>
+            <div class="formation-meta">
+              <span>
+                <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg>
+                {formation.duree}
+              </span>
+              <span>
+                <svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"/></svg>
+                {formation.niveau}
+              </span>
+            </div>
+            <p>{formation.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Espacement -->
+  <div style="padding: 20px 0;"></div>
+</BaseLayout>
+
+<!-- Script EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>
+  (function() {
+    emailjs.init("OniuFmWFr9_caQ9te");
+    
+    const form = document.getElementById('contact-form');
+    const statusDiv = document.getElementById('form-status');
+    const submitBtn = document.getElementById('submit-btn');
+    
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Envoi en cours...';
+      
+      const templateParams = {
+        from_name: document.getElementById('from_name').value,
+        reply_to: document.getElementById('reply_to').value,
+        telephone: document.getElementById('telephone').value,
+        sujet: document.getElementById('sujet').value,
+        message: document.getElementById('message').value
+      };
+      
+      emailjs.send('service_t93feuu', 'template_32fo6ql', templateParams, {
+  contentType: 'application/json'
+})
+        .then(function() {
+          statusDiv.style.display = 'block';
+          statusDiv.style.background = '#10B981';
+          statusDiv.style.color = 'white';
+          statusDiv.textContent = '✅ Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.';
+          form.reset();
+        })
+        .catch(function(error) {
+          statusDiv.style.display = 'block';
+          statusDiv.style.background = '#EF4444';
+          statusDiv.style.color = 'white';
+          statusDiv.textContent = '❌ Une erreur est survenue. Veuillez réessayer ou nous contacter directement par téléphone.';
+          console.error('EmailJS error:', error);
+        })
+        .finally(function() {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Envoyer le message';
+        });
+    });
+  })();
+</script>
