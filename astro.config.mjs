@@ -3,5 +3,7 @@ import netlify from '@astrojs/netlify';
 
 export default defineConfig({
   output: 'server',
-  adapter: netlify(),
+  adapter: netlify({
+    imageService: false  // ← Ajoute cette ligne
+  }),
 });
