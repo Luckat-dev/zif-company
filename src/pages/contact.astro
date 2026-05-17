@@ -20,15 +20,11 @@ const carouselSlides = [
   }
 ];
 
-// Coordonnées
 const contactInfo = {
   phone: "+243 851 954 930",
+  whatsappNumber: "243851954930",
   email: "zifcompany@email.com",
-  villes: [
-    { nom: "Bukavu", adresse: "Avenue Patrice Lumumba, 123" },
-    { nom: "Goma", adresse: "Boulevard Kanyamuhanga, 45" },
-    { nom: "Kinshasa", adresse: "Avenue du Commerce, 78" }
-  ],
+  villes: ["Bukavu", "Goma", "Kinshasa"],
   horaires: [
     { jour: "Lundi - Vendredi", heures: "8h00 - 18h00" },
     { jour: "Samedi", heures: "8h00 - 15h00" },
@@ -268,84 +264,77 @@ const formations = [
       font-weight: 500;
     }
 
-    /* Formulaire */
-    .form-card {
+    /* Carte WhatsApp - GROS BOUTON */
+    .whatsapp-card {
       background: #FFFFFF;
       padding: 35px;
       border-radius: 20px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.05);
       border: 1px solid #EEF2F6;
+      text-align: center;
     }
 
-    .form-group {
-      margin-bottom: 20px;
+    .whatsapp-icon {
+      width: 80px;
+      height: 80px;
+      background: #25D366;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
     }
 
-    .form-group label {
-      display: block;
-      font-weight: 600;
+    .whatsapp-icon svg {
+      width: 45px;
+      height: 45px;
+      fill: white;
+    }
+
+    .whatsapp-card h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
       color: #0F172A;
-      margin-bottom: 8px;
-      font-size: 0.9rem;
+      margin-bottom: 10px;
     }
 
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 14px 16px;
-      border: 1px solid #E2E8F0;
-      border-radius: 12px;
-      font-family: 'Inter', sans-serif;
-      font-size: 1rem;
-      transition: all 0.2s;
-      background: #F8FAFC;
+    .whatsapp-card p {
+      color: #64748B;
+      margin-bottom: 25px;
     }
 
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-      outline: none;
-      border-color: var(--accent-primary);
-      background: white;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
-
-    .btn-submit {
-      width: 100%;
-      padding: 16px;
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    .btn-whatsapp {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: #25D366;
       color: white;
-      border: none;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 1rem;
-      cursor: pointer;
+      padding: 18px 35px;
+      border-radius: 50px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-decoration: none;
       transition: all 0.3s;
+      box-shadow: 0 5px 20px rgba(37, 211, 102, 0.3);
     }
 
-    .btn-submit:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
-    }
-    
-    .btn-submit:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
+    .btn-whatsapp:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
     }
 
-    #form-status {
-      display: none;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 20px;
+    .btn-whatsapp svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
     }
 
-    /* ===== SECTION FORMATIONS ===== */
-    .formations-section {
+    /* ===== SECTION TECHNIQUES DE SOUDURE ===== */
+    .techniques-section {
       padding: 60px 0;
       background: #F8FAFC;
-      border-radius: 30px 30px 0 0;
     }
 
     .section-header {
@@ -364,6 +353,65 @@ const formations = [
     .section-header p {
       color: #64748B;
       font-size: 1.1rem;
+    }
+
+    .techniques-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
+
+    .technique-card {
+      background: #FFFFFF;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+      border: 1px solid #EEF2F6;
+      transition: all 0.25s;
+    }
+
+    .technique-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 30px rgba(59, 130, 246, 0.08);
+      border-color: var(--accent-primary);
+    }
+
+    .technique-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #DBEAFE, #BFDBFE);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .technique-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--accent-primary);
+    }
+
+    .technique-card h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 12px;
+    }
+
+    .technique-card p {
+      color: #64748B;
+      line-height: 1.6;
+      font-size: 0.9rem;
+    }
+
+    /* ===== SECTION FORMATIONS ===== */
+    .formations-section {
+      padding: 60px 0;
+      background: #F8FAFC;
+      border-radius: 30px 30px 0 0;
     }
 
     .formations-grid {
@@ -509,14 +557,14 @@ const formations = [
           </div>
           
           <div class="contact-item">
-            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
-            <div class="contact-item-content">
-              <h4>Adresses</h4>
-              {contactInfo.villes.map(ville => (
-                <p><strong>{ville.nom}</strong> - {ville.adresse}</p>
-              ))}
-            </div>
-          </div>
+  <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+  <div class="contact-item-content">
+    <h4>Villes d'intervention</h4>
+    {contactInfo.villes.map(ville => (
+      <p>{ville}</p>
+    ))}
+  </div>
+</div>
 
           <div style="margin-top: 25px;">
             <div class="info-header">
@@ -536,55 +584,69 @@ const formations = [
           </div>
         </div>
 
-        <!-- Formulaire de contact -->
-        <div class="form-card">
-          <div class="info-header">
-            <div class="info-icon">
-              <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/></svg>
-            </div>
-            <h3>Envoyez-nous un message</h3>
+        <!-- GROS BOUTON WHATSAPP -->
+        <div class="whatsapp-card">
+          <div class="whatsapp-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M19.077 4.928C17.191 3.041 14.683 2 12.006 2 6.498 2 2.017 6.482 2.002 11.99c0 1.762.458 3.482 1.33 4.998L2 22l5.232-1.372a9.97 9.97 0 0 0 4.764 1.215h.004c5.507 0 9.988-4.48 10-9.988.006-2.67-1.03-5.178-2.923-7.067zm-7.07 15.36h-.003a8.3 8.3 0 0 1-4.231-1.158l-.303-.18-3.105.814.83-3.026-.2-.317a8.257 8.257 0 0 1-1.268-4.425c.003-4.559 3.715-8.268 8.28-8.268a8.23 8.23 0 0 1 5.857 2.424 8.224 8.224 0 0 1 2.425 5.851c-.003 4.563-3.718 8.275-8.282 8.278zm4.54-6.198c-.248-.124-1.47-.726-1.698-.809-.228-.083-.394-.124-.56.124-.165.248-.644.809-.79.975-.145.165-.29.186-.538.062-.25-.124-1.05-.387-2-1.234-.74-.66-1.24-1.475-1.384-1.724-.145-.248-.015-.383.109-.507.111-.111.248-.29.372-.435.124-.145.165-.248.248-.414.083-.165.041-.31-.021-.434-.062-.124-.56-1.347-.767-1.844-.201-.483-.406-.417-.56-.425-.143-.007-.31-.009-.476-.009a.914.914 0 0 0-.663.31c-.228.248-.87.85-.87 2.073 0 1.223.89 2.405 1.015 2.57.124.166 1.753 2.676 4.246 3.753.593.256 1.056.409 1.417.524.595.189 1.137.162 1.565.098.477-.071 1.47-.6 1.677-1.18.207-.58.207-1.077.145-1.18-.062-.104-.228-.166-.476-.29z"/>
+            </svg>
           </div>
-          
-          <div id="form-status"></div>
-          
-          <form id="contact-form">
-            <div class="form-group">
-              <label>Nom complet *</label>
-              <input type="text" name="from_name" id="from_name" placeholder="Votre nom" required>
-            </div>
-            
-            <div class="form-group">
-              <label>Email *</label>
-              <input type="email" name="reply_to" id="reply_to" placeholder="votre@email.com" required>
-            </div>
-            
-            <div class="form-group">
-              <label>Téléphone</label>
-              <input type="tel" name="telephone" id="telephone" placeholder="Votre numéro">
-            </div>
-            
-            <div class="form-group">
-              <label>Sujet *</label>
-              <select name="sujet" id="sujet" required>
-                <option value="">Sélectionnez un sujet</option>
-                <option value="Demande de devis">Demande de devis</option>
-                <option value="Formation">Formation</option>
-                <option value="Renseignement">Renseignement</option>
-                <option value="Autre">Autre</option>
-              </select>
-            </div>
-            
-            <div class="form-group">
-              <label>Message *</label>
-              <textarea name="message" id="message" rows="5" placeholder="Votre message..." required></textarea>
-            </div>
-            
-            <button type="submit" class="btn-submit" id="submit-btn">Envoyer le message</button>
-          </form>
+          <h3>Contactez-nous directement</h3>
+          <p>Une question ? Un devis ? Notre équipe vous répond rapidement sur WhatsApp</p>
+          <a href={`https://wa.me/${contactInfo.whatsappNumber}?text=Bonjour%20ZIF%20COMPANY%2C%20je%20souhaite%20avoir%20plus%20d%27informations`} class="btn-whatsapp" target="_blank">
+            <svg viewBox="0 0 24 24">
+              <path d="M19.077 4.928C17.191 3.041 14.683 2 12.006 2 6.498 2 2.017 6.482 2.002 11.99c0 1.762.458 3.482 1.33 4.998L2 22l5.232-1.372a9.97 9.97 0 0 0 4.764 1.215h.004c5.507 0 9.988-4.48 10-9.988.006-2.67-1.03-5.178-2.923-7.067zm-7.07 15.36h-.003a8.3 8.3 0 0 1-4.231-1.158l-.303-.18-3.105.814.83-3.026-.2-.317a8.257 8.257 0 0 1-1.268-4.425c.003-4.559 3.715-8.268 8.28-8.268a8.23 8.23 0 0 1 5.857 2.424 8.224 8.224 0 0 1 2.425 5.851c-.003 4.563-3.718 8.275-8.282 8.278zm4.54-6.198c-.248-.124-1.47-.726-1.698-.809-.228-.083-.394-.124-.56.124-.165.248-.644.809-.79.975-.145.165-.29.186-.538.062-.25-.124-1.05-.387-2-1.234-.74-.66-1.24-1.475-1.384-1.724-.145-.248-.015-.383.109-.507.111-.111.248-.29.372-.435.124-.145.165-.248.248-.414.083-.165.041-.31-.021-.434-.062-.124-.56-1.347-.767-1.844-.201-.483-.406-.417-.56-.425-.143-.007-.31-.009-.476-.009a.914.914 0 0 0-.663.31c-.228.248-.87.85-.87 2.073 0 1.223.89 2.405 1.015 2.57.124.166 1.753 2.676 4.246 3.753.593.256 1.056.409 1.417.524.595.189 1.137.162 1.565.098.477-.071 1.47-.6 1.677-1.18.207-.58.207-1.077.145-1.18-.062-.104-.228-.166-.476-.29z"/>
+            </svg>
+            Nous contacter sur WhatsApp
+          </a>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- SECTION TECHNIQUES DE SOUDURE -->
+  <section class="techniques-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Les techniques de soudure</h2>
+        <p>Découvrez les différents procédés que nous maîtrisons</p>
+      </div>
+      
+      <div class="techniques-grid">
+        <div class="technique-card">
+          <div class="technique-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"/></svg>
+          </div>
+          <h3>Soudure MIG/MAG</h3>
+          <p><strong>MIG (Metal Inert Gas)</strong> et <strong>MAG (Metal Active Gas)</strong> sont des procédés de soudage semi-automatiques. Ils utilisent un fil-électrode consommable et un gaz de protection. Idéal pour l'acier, l'inox et l'aluminium. Rapide et efficace pour les grandes surfaces.</p>
+        </div>
+
+        <div class="technique-card">
+          <div class="technique-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"/></svg>
+          </div>
+          <h3>Soudure MMA (Électrode enrobée)</h3>
+          <p><strong>MMA (Manual Metal Arc)</strong>, aussi appelée soudure à l'arc. Technique manuelle utilisant une électrode enrobée. Très polyvalente, elle résiste bien aux conditions extérieures (vent, humidité). Parfaite pour les travaux de construction et de réparation.</p>
+        </div>
+
+        <div class="technique-card">
+          <div class="technique-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"/></svg>
+          </div>
+          <h3>Soudure TIG</h3>
+          <p><strong>TIG (Tungsten Inert Gas)</strong> est un procédé de haute précision. Une électrode en tungstène non consommable crée l'arc, tandis qu'une baguette d'apport est ajoutée manuellement. Idéal pour les soudures esthétiques sur inox, aluminium, cuivre, et pour les travaux fins.</p>
+        </div>
+
+        <div class="technique-card">
+          <div class="technique-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"/></svg>
+          </div>
+          <h3>Soudure à la flamme (Chalumeau)</h3>
+          <p>Technique traditionnelle utilisant un chalumeau oxyacétylénique. Idéal pour les travaux de brasage et de soudage sur tôles fines, cuivre et métaux non ferreux. Permet un excellent contrôle de la température.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- SECTION FORMATIONS -->
   <section class="formations-section">
@@ -621,52 +683,3 @@ const formations = [
   <!-- Espacement -->
   <div style="padding: 20px 0;"></div>
 </BaseLayout>
-
-<!-- Script EmailJS -->
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-<script>
-  (function() {
-    emailjs.init("OniuFmWFr9_caQ9te");
-    
-    const form = document.getElementById('contact-form');
-    const statusDiv = document.getElementById('form-status');
-    const submitBtn = document.getElementById('submit-btn');
-    
-    form.addEventListener('submit', function(event) {
-      event.preventDefault();
-      
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Envoi en cours...';
-      
-      const templateParams = {
-        from_name: document.getElementById('from_name').value,
-        reply_to: document.getElementById('reply_to').value,
-        telephone: document.getElementById('telephone').value,
-        sujet: document.getElementById('sujet').value,
-        message: document.getElementById('message').value
-      };
-      
-      emailjs.send('service_t93feuu', 'template_32fo6ql', templateParams, {
-  contentType: 'application/json'
-})
-        .then(function() {
-          statusDiv.style.display = 'block';
-          statusDiv.style.background = '#10B981';
-          statusDiv.style.color = 'white';
-          statusDiv.textContent = '✅ Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.';
-          form.reset();
-        })
-        .catch(function(error) {
-          statusDiv.style.display = 'block';
-          statusDiv.style.background = '#EF4444';
-          statusDiv.style.color = 'white';
-          statusDiv.textContent = '❌ Une erreur est survenue. Veuillez réessayer ou nous contacter directement par téléphone.';
-          console.error('EmailJS error:', error);
-        })
-        .finally(function() {
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Envoyer le message';
-        });
-    });
-  })();
-</script>

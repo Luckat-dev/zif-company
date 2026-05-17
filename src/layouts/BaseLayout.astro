@@ -9,13 +9,7 @@ const { title, description = "ZIF COMPANY - Centre de Formation & Services Techn
 
 const contactPhone = "+243 851 954 930";
 const contactEmail = "zifcompany@email.com";
-
-const socialLinks = [
-  { icon: "facebook", url: "#" },
-  { icon: "instagram", url: "#" },
-  { icon: "linkedin", url: "#" },
-  { icon: "whatsapp", url: "#" }
-];
+const whatsappNumber = "243851954930";
 
 const navLinks = [
   { text: "Accueil", url: "/" },
@@ -32,6 +26,7 @@ const navLinks = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content={description}>
     <title>{title} | ZIF COMPANY</title>
+    <link rel="icon" type="image/png" href="/favicon.png?v=2">
     
     <!-- Polices -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -99,11 +94,11 @@ const navLinks = [
             color: #3B82F6;
         }
 
-        /* Footer */
+        /* Footer simplifié */
         .footer {
             background: #0A0F1A;
             color: #94A3B8;
-            padding: 60px 0 30px;
+            padding: 50px 0 30px;
             position: relative;
             margin-top: auto;
         }
@@ -120,17 +115,17 @@ const navLinks = [
 
         .footer-content {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 40px;
-            margin-bottom: 50px;
+            margin-bottom: 40px;
         }
 
         .footer-section h3 {
             color: white;
             font-family: 'Poppins', sans-serif;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 600;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             position: relative;
             display: inline-block;
         }
@@ -148,7 +143,8 @@ const navLinks = [
 
         .footer-section p {
             line-height: 1.7;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
         }
 
         .footer-links {
@@ -156,7 +152,7 @@ const navLinks = [
         }
 
         .footer-links li {
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .footer-links a {
@@ -166,6 +162,7 @@ const navLinks = [
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            font-size: 0.9rem;
         }
 
         .footer-links a svg {
@@ -178,38 +175,6 @@ const navLinks = [
             color: white;
         }
 
-        .social-links {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-        }
-
-        .social-link {
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #94A3B8;
-            text-decoration: none;
-            transition: all 0.3s;
-            border: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .social-link svg {
-            width: 20px;
-            height: 20px;
-            fill: currentColor;
-        }
-
-        .social-link:hover {
-            background: #3B82F6;
-            color: white;
-            transform: translateY(-3px);
-        }
-
         .contact-info-footer {
             list-style: none;
         }
@@ -217,37 +182,74 @@ const navLinks = [
         .contact-info-footer li {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 15px;
+            gap: 10px;
+            margin-bottom: 12px;
             color: #94A3B8;
+            font-size: 0.9rem;
         }
 
         .contact-info-footer svg {
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             fill: #3B82F6;
+            flex-shrink: 0;
+        }
+
+        .whatsapp-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #25D366;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .whatsapp-link:hover {
+            background: #128C7E;
+            transform: translateY(-2px);
+        }
+
+        .whatsapp-link svg {
+            width: 16px;
+            height: 16px;
+            fill: white;
         }
 
         .footer-bottom {
             text-align: center;
-            padding-top: 30px;
+            padding-top: 25px;
             border-top: 1px solid rgba(255,255,255,0.08);
         }
 
         .footer-bottom p {
             color: #64748B;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
         }
 
         .footer-bottom .signature {
             color: #3B82F6;
             font-weight: 600;
-            margin-top: 10px;
+            margin-top: 8px;
+        }
+
+        .footer-bottom .signature a {
+            color: #3B82F6;
+            text-decoration: none;
+        }
+
+        .footer-bottom .signature a:hover {
+            text-decoration: underline;
         }
 
         .footer-bottom .signature svg {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             fill: #EF4444;
             margin: 0 5px;
         }
@@ -274,8 +276,109 @@ const navLinks = [
             .footer-content {
                 grid-template-columns: 1fr;
                 gap: 30px;
+                text-align: center;
+            }
+            .footer-section h3::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            .contact-info-footer li {
+                justify-content: center;
             }
         }
+
+
+ /* Bottom navigation bar - TRÈS PETITE */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 4px 10px;
+  box-shadow: 0 -1px 3px rgba(0,0,0,0.05);
+  border-top: 1px solid #eef2f6;
+  z-index: 1000;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-decoration: none;
+  color: #94a3b8;
+  font-size: 9px;
+  transition: all 0.2s;
+  padding: 4px 6px;
+  border-radius: 8px;
+}
+
+.nav-item svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+}
+
+.nav-item.active {
+  color: #3B82F6;
+}
+
+.nav-item:hover {
+  color: #3B82F6;
+  background: #f1f5f9;
+}
+
+/* Ajouter un padding-bottom au body */
+body {
+  padding-bottom: 52px;
+}
+
+@media (max-width: 768px) {
+  .bottom-nav {
+    padding: 3px 8px;
+  }
+  .nav-item span {
+    font-size: 8px;
+  }
+  .nav-item svg {
+    width: 14px;
+    height: 14px;
+  }
+  .nav-item {
+    padding: 3px 4px;
+  }
+  body {
+    padding-bottom: 48px;
+  }
+}
+
+.admin-login-link {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.admin-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #64748B;
+  text-decoration: none;
+  font-size: 0.8rem;
+  transition: color 0.2s;
+}
+
+.admin-link:hover {
+  color: #3B82F6;
+}
+
+.admin-link svg {
+  stroke: currentColor;
+}
     </style>
 </head>
 <body>
@@ -296,29 +399,23 @@ const navLinks = [
         </main>
     </div>
 
-    <!-- Footer -->
+    <!-- Footer simplifié -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
+                <!-- Logo & Présentation -->
                 <div class="footer-section">
                     <h3>ZIF COMPANY</h3>
                     <p>Centre de Formation & Services Techniques. L'excellence de la soudure industrielle et créative en RDC.</p>
-                    <div class="social-links">
-                        <a href="#" class="social-link" target="_blank" rel="noopener">
-                            <svg viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z"/></svg>
-                        </a>
-                        <a href="#" class="social-link" target="_blank" rel="noopener">
-                            <svg viewBox="0 0 24 24"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2zM12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>
-                        </a>
-                        <a href="#" class="social-link" target="_blank" rel="noopener">
-                            <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68zm1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
-                        </a>
-                        <a href="#" class="social-link" target="_blank" rel="noopener">
-                            <svg viewBox="0 0 24 24"><path d="M19.077 4.928C17.191 3.041 14.683 2 12.006 2 6.498 2 2.017 6.482 2.002 11.99c0 1.762.458 3.482 1.33 4.998L2 22l5.232-1.372a9.97 9.97 0 0 0 4.764 1.215h.004c5.507 0 9.988-4.48 10-9.988.006-2.67-1.03-5.178-2.923-7.067zm-7.07 15.36h-.003a8.3 8.3 0 0 1-4.231-1.158l-.303-.18-3.105.814.83-3.026-.2-.317a8.257 8.257 0 0 1-1.268-4.425c.003-4.559 3.715-8.268 8.28-8.268a8.23 8.23 0 0 1 5.857 2.424 8.224 8.224 0 0 1 2.425 5.851c-.003 4.563-3.718 8.275-8.282 8.278zm4.54-6.198c-.248-.124-1.47-.726-1.698-.809-.228-.083-.394-.124-.56.124-.165.248-.644.809-.79.975-.145.165-.29.186-.538.062-.25-.124-1.05-.387-2-1.234-.74-.66-1.24-1.475-1.384-1.724-.145-.248-.015-.383.109-.507.111-.111.248-.29.372-.435.124-.145.165-.248.248-.414.083-.165.041-.31-.021-.434-.062-.124-.56-1.347-.767-1.844-.201-.483-.406-.417-.56-.425-.143-.007-.31-.009-.476-.009a.914.914 0 0 0-.663.31c-.228.248-.87.85-.87 2.073 0 1.223.89 2.405 1.015 2.57.124.166 1.753 2.676 4.246 3.753.593.256 1.056.409 1.417.524.595.189 1.137.162 1.565.098.477-.071 1.47-.6 1.677-1.18.207-.58.207-1.077.145-1.18-.062-.104-.228-.166-.476-.29z"/></svg>
-                        </a>
-                    </div>
+                    <a href={`https://wa.me/${whatsappNumber}?text=Bonjour%20ZIF%20COMPANY`} class="whatsapp-link" target="_blank">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19.077 4.928C17.191 3.041 14.683 2 12.006 2 6.498 2 2.017 6.482 2.002 11.99c0 1.762.458 3.482 1.33 4.998L2 22l5.232-1.372a9.97 9.97 0 0 0 4.764 1.215h.004c5.507 0 9.988-4.48 10-9.988.006-2.67-1.03-5.178-2.923-7.067zm-7.07 15.36h-.003a8.3 8.3 0 0 1-4.231-1.158l-.303-.18-3.105.814.83-3.026-.2-.317a8.257 8.257 0 0 1-1.268-4.425c.003-4.559 3.715-8.268 8.28-8.268a8.23 8.23 0 0 1 5.857 2.424 8.224 8.224 0 0 1 2.425 5.851c-.003 4.563-3.718 8.275-8.282 8.278zm4.54-6.198c-.248-.124-1.47-.726-1.698-.809-.228-.083-.394-.124-.56.124-.165.248-.644.809-.79.975-.145.165-.29.186-.538.062-.25-.124-1.05-.387-2-1.234-.74-.66-1.24-1.475-1.384-1.724-.145-.248-.015-.383.109-.507.111-.111.248-.29.372-.435.124-.145.165-.248.248-.414.083-.165.041-.31-.021-.434-.062-.124-.56-1.347-.767-1.844-.201-.483-.406-.417-.56-.425-.143-.007-.31-.009-.476-.009a.914.914 0 0 0-.663.31c-.228.248-.87.85-.87 2.073 0 1.223.89 2.405 1.015 2.57.124.166 1.753 2.676 4.246 3.753.593.256 1.056.409 1.417.524.595.189 1.137.162 1.565.098.477-.071 1.47-.6 1.677-1.18.207-.58.207-1.077.145-1.18-.062-.104-.228-.166-.476-.29z"/>
+                        </svg>
+                        WhatsApp
+                    </a>
                 </div>
                 
+                <!-- Navigation -->
                 <div class="footer-section">
                     <h3>Navigation</h3>
                     <ul class="footer-links">
@@ -333,35 +430,43 @@ const navLinks = [
                     </ul>
                 </div>
                 
+                <!-- Contact -->
                 <div class="footer-section">
                     <h3>Contact</h3>
                     <ul class="contact-info-footer">
-                        <li><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg> {contactPhone}</li>
-                        <li><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/></svg> {contactEmail}</li>
-                        <li><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg> Bukavu · Goma · Kinshasa</li>
-                        <li><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg> Lun - Sam : 8h - 18h</li>
+                        <li>
+                            <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                            {contactPhone}
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/></svg>
+                            {contactEmail}
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+                            Bukavu · Goma · Kinshasa
+                        </li>
                     </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>Newsletter</h3>
-                    <p>Recevez nos actualités et offres</p>
-                    <form name="newsletter" method="POST" action="/.netlify/functions/newsletter-signup" style="display: flex; margin-top: 15px;">
-  <input type="email" name="email" placeholder="Votre email" style="flex: 1; padding: 12px; border: none; background: rgba(255,255,255,0.05); color: white; border-radius: 8px 0 0 8px; outline: none;" required>
-  <button type="submit" style="background: #3B82F6; border: none; padding: 12px 18px; border-radius: 0 8px 8px 0; cursor: pointer;">
-    <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
-  </button>
-</form>
                 </div>
             </div>
             
             <div class="footer-bottom">
                 <p>© 2026 ZIF COMPANY. Tous droits réservés.</p>
                 <p class="signature">
-                    Designed with <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg> by <strong>Luc Kat</strong>
+                    <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    by <a href="https://luckat-dev.github.io" target="_blank"><strong>Luc Kat</strong></a>
                 </p>
             </div>
         </div>
+        <div class="admin-login-link">
+  <a href="/admin" class="admin-link">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+      <circle cx="12" cy="7" r="4"/>
+    </svg>
+    Administration
+  </a>
+</div>
     </footer>
 
     <!-- Widget Netlify Identity -->
@@ -381,5 +486,76 @@ const navLinks = [
         window.netlifyIdentity.init();
       }
     </script>
+
+    <!-- Bottom Navigation Bar -->
+<div class="bottom-nav">
+  <a href="/" class="nav-item" data-page="accueil">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+    <span>Accueil</span>
+  </a>
+  <a href="/equipe" class="nav-item" data-page="equipe">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+      <circle cx="12" cy="7" r="4"/>
+    </svg>
+    <span>Équipe</span>
+  </a>
+  <a href="/projets" class="nav-item" data-page="projets">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="2" y="4" width="20" height="16" rx="2"/>
+      <path d="M8 9h8"/>
+      <path d="M8 13h6"/>
+      <path d="M2 8h20"/>
+    </svg>
+    <span>Projets</span>
+  </a>
+  <a href="/contact" class="nav-item" data-page="contact">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+      <polyline points="22,6 12,13 2,6"/>
+    </svg>
+    <span>Contact</span>
+  </a>
+</div>
+
+<script>
+  // Marquer l'onglet actif
+  const currentPath = window.location.pathname;
+  const navItems = document.querySelectorAll('.nav-item');
+  navItems.forEach(item => {
+    const href = item.getAttribute('href');
+    if (href === currentPath || (currentPath === '/' && href === '/')) {
+      item.classList.add('active');
+    }
+  });
+</script>
+
+<script>
+  // Vérifier si l'admin est connecté
+  const isAdmin = localStorage.getItem('admin') === 'true';
+  
+  // Ajouter un bouton admin dans la bottom nav si connecté
+  if (isAdmin) {
+    const bottomNav = document.querySelector('.bottom-nav');
+    if (bottomNav && !document.querySelector('.nav-item.admin-link')) {
+      const adminLink = document.createElement('a');
+      adminLink.href = '/admin';
+      adminLink.className = 'nav-item admin-link';
+      adminLink.innerHTML = `
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+          <path d="M12 3v4"/>
+          <path d="M12 3a6 6 0 0 0 0 12"/>
+        </svg>
+        <span>Admin</span>
+      `;
+      bottomNav.appendChild(adminLink);
+    }
+  }
+</script>
 </body>
 </html>

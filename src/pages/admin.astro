@@ -1,0 +1,533 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Login from '../components/admin/Login.astro';
+import AdminHeader from '../components/admin/AdminHeader.astro';
+import MemberForm from '../components/admin/MemberForm.astro';
+import MemberList from '../components/admin/MemberList.astro';
+import EditModal from '../components/admin/EditModal.astro';
+import DeleteModal from '../components/admin/DeleteModal.astro';
+import ProjectsTab from '../components/admin/ProjectsTab.astro';
+import EditProjectModal from '../components/admin/EditProjectModal.astro';
+import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
+---
+
+<BaseLayout title="Administration">
+  <div id="app">
+    <div id="login-container"><Login /></div>
+
+    <div id="admin-container" style="display:none">
+      <AdminHeader />
+      
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="members">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          Équipe
+        </button>
+        <button class="tab-btn" data-tab="projects">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <path d="M8 9h8"/>
+            <path d="M8 13h6"/>
+            <path d="M2 8h20"/>
+          </svg>
+          Projets
+        </button>
+      </div>
+
+      <div id="members-tab" class="tab-content active">
+        <div class="admin-dashboard">
+          <MemberForm />
+          <MemberList />
+        </div>
+      </div>
+
+      <div id="projects-tab" class="tab-content">
+        <ProjectsTab />
+      </div>
+    </div>
+
+    <EditModal />
+    <DeleteModal />
+    <EditProjectModal />
+    <DeleteProjectModal />
+  </div>
+
+  <!-- MODAL ERREUR GLOBAL -->
+  <div id="error-modal" class="modal error-modal">
+    <div class="modal-content error-content">
+      <div class="error-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      </div>
+      <h3>Erreur</h3>
+      <p id="global-error-message">Une erreur est survenue</p>
+      <button class="error-btn" onclick="closeGlobalErrorModal()">Fermer</button>
+    </div>
+  </div>
+
+  <!-- MODAL SUCCÈS GLOBAL -->
+  <div id="success-modal" class="modal success-modal">
+    <div class="modal-content success-content">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <h3>Succès !</h3>
+      <p id="global-success-message">Opération réussie</p>
+      <button class="success-btn" onclick="closeGlobalSuccessModal()">Continuer</button>
+    </div>
+  </div>
+
+  <style>
+    .tabs {
+      display: flex;
+      gap: 10px;
+      padding: 0 25px;
+      margin-top: 20px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .tab-btn {
+      padding: 12px 24px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+      color: #64748b;
+      transition: all 0.2s;
+      border-bottom: 2px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tab-btn:hover {
+      color: #3B82F6;
+    }
+    .tab-btn.active {
+      color: #3B82F6;
+      border-bottom-color: #3B82F6;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .admin-dashboard {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 25px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 25px;
+    }
+
+    /* MODALS GLOBAUX */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .success-modal .modal-content, .error-modal .modal-content {
+      text-align: center;
+      max-width: 350px;
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+    }
+    .success-icon {
+      width: 70px;
+      height: 70px;
+      background: #10B981;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      animation: scaleIn 0.3s ease;
+    }
+    .error-icon {
+      width: 70px;
+      height: 70px;
+      background: #EF4444;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      animation: scaleIn 0.3s ease;
+    }
+    .success-icon svg, .error-icon svg { width: 40px; height: 40px; }
+    .success-modal h3, .error-modal h3 { font-size: 24px; color: #333; margin-bottom: 10px; }
+    .success-modal p, .error-modal p { color: #666; margin-bottom: 25px; }
+    .success-btn, .error-btn {
+      padding: 10px 30px;
+      background: #10B981;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .error-btn { background: #EF4444; }
+    @keyframes scaleIn {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @media (max-width: 768px) {
+      .admin-dashboard {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 15px;
+      }
+      .tabs {
+        padding: 0 15px;
+      }
+      .tab-btn {
+        padding: 10px 16px;
+        font-size: 14px;
+      }
+    }
+  </style>
+
+  <script>
+    import { supabase } from '../lib/supabase.js';
+    
+    const PASSWORD = import.meta.env.ADMIN_PASSWORD;
+    
+    const loginContainer = document.getElementById('login-container');
+    const adminContainer = document.getElementById('admin-container');
+    
+    // MODAL DE NOTIFICATION GLOBAL
+    window.showNotification = (message, type = 'info') => {
+      if (type === 'success') {
+        const modal = document.getElementById('success-modal');
+        const msgSpan = document.getElementById('global-success-message');
+        if (modal && msgSpan) {
+          msgSpan.textContent = message;
+          modal.style.display = 'flex';
+          setTimeout(() => {
+            modal.style.display = 'none';
+          }, 2000);
+        } else {
+          alert(message);
+        }
+      } else if (type === 'error') {
+        const modal = document.getElementById('error-modal');
+        const msgSpan = document.getElementById('global-error-message');
+        if (modal && msgSpan) {
+          msgSpan.textContent = message;
+          modal.style.display = 'flex';
+        } else {
+          alert(message);
+        }
+      } else {
+        alert(message);
+      }
+    };
+    
+    // MODALS GLOBAUX
+    window.showErrorModal = (message) => {
+      window.showNotification(message, 'error');
+    };
+    
+    window.closeGlobalErrorModal = () => {
+      document.getElementById('error-modal').style.display = 'none';
+    };
+    
+    window.showSuccessModal = (message) => {
+      window.showNotification(message, 'success');
+    };
+    
+    window.closeGlobalSuccessModal = () => {
+      document.getElementById('success-modal').style.display = 'none';
+    };
+    
+    // Gestion des onglets
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    function switchTab(tabId) {
+      tabBtns.forEach(btn => btn.classList.remove('active'));
+      tabContents.forEach(content => content.classList.remove('active'));
+      document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active');
+      document.getElementById(`${tabId}-tab`).classList.add('active');
+    }
+    
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        switchTab(btn.dataset.tab);
+      });
+    });
+    
+    window.checkAuth = () => {
+      if (localStorage.getItem('admin') === 'true') {
+        loginContainer.style.display = 'none';
+        adminContainer.style.display = 'block';
+        window.loadMembersList();
+        setTimeout(() => {
+          const event = new CustomEvent('admin-authenticated');
+          window.dispatchEvent(event);
+        }, 100);
+        return true;
+      }
+      return false;
+    };
+    
+    window.login = async (password) => {
+  if (password === PASSWORD) {
+    const token = btoa(password + ':' + Date.now());
+    window.setAdminToken(token);
+    localStorage.setItem('admin', 'true');
+    loginContainer.style.display = 'none';
+    adminContainer.style.display = 'block';
+    window.loadMembersList();
+    return true;
+  }
+  return false;
+};
+    window.logout = () => {
+      localStorage.removeItem('admin');
+      location.reload();
+    };
+    
+    window.uploadImage = async (file, folder = 'members') => {
+      if (!file) return null;
+      
+      const fileName = Date.now() + '_' + file.name;
+      const { error } = await supabase.storage
+        .from('team-photos')
+        .upload(folder + '/' + fileName, file);
+      if (error) throw error;
+      const { data: { publicUrl } } = supabase.storage
+        .from('team-photos')
+        .getPublicUrl(folder + '/' + fileName);
+      return publicUrl;
+    };
+    
+    window.loadMembersList = async () => {
+      const { data: members } = await supabase
+        .from('team')
+        .select('*')
+        .order('display_order', { ascending: true });
+      
+      const event = new CustomEvent('members-loaded', { detail: members });
+      window.dispatchEvent(event);
+    };
+    
+    window.addMember = async (memberData, photoFile) => {
+  let photoUrl = null;
+  if (photoFile) {
+    photoUrl = await window.uploadImage(photoFile, 'members');
+  }
+
+  const response = await fetch('/.netlify/functions/add-member', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${window.getAdminToken()}`
+    },
+    body: JSON.stringify({
+      name: memberData.name,
+      role: memberData.role,
+      bio: memberData.bio,
+      whatsapp: memberData.whatsapp,
+      display_order: memberData.order,
+      photo_url: photoUrl
+    })
+  });
+
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error);
+  
+  await window.loadMembersList();
+};
+    
+    window.updateMember = async (id, memberData, photoFile) => {
+  let photoUrl = null;
+  if (photoFile) {
+    photoUrl = await window.uploadImage(photoFile, 'members');
+  }
+
+  const response = await fetch('/.netlify/functions/update-member', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${window.getAdminToken()}`
+    },
+    body: JSON.stringify({
+      id: id,
+      name: memberData.name,
+      role: memberData.role,
+      bio: memberData.bio,
+      whatsapp: memberData.whatsapp,
+      display_order: memberData.order,
+      photo_url: photoUrl
+    })
+  });
+
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error);
+  
+  await window.loadMembersList();
+};
+    window.deleteMember = async (id) => {
+  const response = await fetch('/.netlify/functions/delete-member', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${window.getAdminToken()}`
+    },
+    body: JSON.stringify({ id: id })
+  });
+
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error);
+  
+  await window.loadMembersList();
+};
+
+
+
+// ========== FONCTIONS PROJETS ==========
+
+// Ajouter un projet
+window.addProject = async (projectData, imageFile) => {
+  let imageUrl = null;
+  if (imageFile) {
+    imageUrl = await window.uploadImage(imageFile, 'projects');
+  }
+
+  const response = await fetch('/.netlify/functions/add-project', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${window.getAdminToken()}`
+    },
+    body: JSON.stringify({
+      title: projectData.title,
+      categorie: projectData.categorie,
+      ville: projectData.ville,
+      annee: projectData.annee,
+      description: projectData.description,
+      image_url: imageUrl
+    })
+  });
+
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error);
+  
+  if (window.loadProjectsList) {
+    await window.loadProjectsList();
+  }
+};
+
+// Modifier un projet
+window.updateProject = async (id, projectData, imageFile) => {
+  let imageUrl = null;
+  if (imageFile) {
+    imageUrl = await window.uploadImage(imageFile, 'projects');
+  }
+
+  const response = await fetch('/.netlify/functions/update-project', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${window.getAdminToken()}`
+    },
+    body: JSON.stringify({
+      id: id,
+      title: projectData.title,
+      categorie: projectData.categorie,
+      ville: projectData.ville,
+      annee: projectData.annee,
+      description: projectData.description,
+      image_url: imageUrl
+    })
+  });
+
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error);
+  
+  if (window.loadProjectsList) {
+    await window.loadProjectsList();
+  }
+};
+
+// Supprimer un projet
+window.deleteProject = async (id) => {
+  const response = await fetch('/.netlify/functions/delete-project', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${window.getAdminToken()}`
+    },
+    body: JSON.stringify({ id: id })
+  });
+
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error);
+  
+  if (window.loadProjectsList) {
+    await window.loadProjectsList();
+  }
+};
+    checkAuth();
+    
+    window.onclick = (e) => {
+      const errorModal = document.getElementById('error-modal');
+      const successModal = document.getElementById('success-modal');
+      if (e.target === errorModal) window.closeGlobalErrorModal();
+      if (e.target === successModal) window.closeGlobalSuccessModal();
+    };
+
+    // Forcer la taille des images (exécution unique et discrète)
+    function resizeImages() {
+      const images = document.querySelectorAll('.project-item img, .member-card img');
+      images.forEach(img => {
+        if (!img.hasAttribute('data-resized')) {
+          img.style.width = '60px';
+          img.style.height = '60px';
+          img.style.minWidth = '60px';
+          img.style.maxWidth = '60px';
+          img.style.borderRadius = '10px';
+          img.style.objectFit = 'cover';
+          img.setAttribute('data-resized', 'true');
+        }
+      });
+    }
+
+    // Exécuter au chargement et après les mises à jour
+    setTimeout(resizeImages, 100);
+
+    // Observer les nouvelles images sans boucler en continu
+    const resizeObserver = new MutationObserver(() => {
+      resizeImages();
+    });
+    resizeObserver.observe(document.body, { childList: true, subtree: true });
+
+    
+    // Dans le script de admin.astro
+window.getAdminToken = () => {
+  return localStorage.getItem('admin_token');
+};
+
+window.setAdminToken = (token) => {
+  localStorage.setItem('admin_token', token);
+};
+  </script>
+</BaseLayout>

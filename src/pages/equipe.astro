@@ -1,12 +1,19 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { supabase } from '../lib/supabase';
 
-// Chargement dynamique de l'équipe
-const allMembres = import.meta.glob('../content/equipe/*.md', { eager: true });
-const membres = Object.values(allMembres)
-  .sort((a, b) => (a.frontmatter.ordre || 99) - (b.frontmatter.ordre || 99));
+// Récupérer les membres depuis Supabase
+const { data: membres, error } = await supabase
+  .from('team')
+  .select('*')
+  .order('display_order', { ascending: true });
 
-// Chargement dynamique de la photo hero
+// En cas d'erreur, afficher un tableau vide
+if (error) {
+  console.error('Erreur Supabase:', error);
+}
+
+// Chargement dynamique de la photo hero (garde ton système existant)
 const settingsFiles = import.meta.glob('../content/settings/*.md', { eager: true });
 const equipeSettings = settingsFiles['../content/settings/equipe.md'] || { frontmatter: { hero_image: '' } };
 const heroImage = equipeSettings.frontmatter.hero_image || '';
@@ -31,7 +38,6 @@ const hasHeroImage = heroImage !== '';
       background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
     }
 
-    /* Fond avec photo floue */
     .hero-background {
       position: absolute;
       top: 0;
@@ -263,36 +269,34 @@ const hasHeroImage = heroImage !== '';
       fill: var(--accent-primary);
     }
 
-    /* Réseaux sociaux */
-    .membre-social {
-      display: flex;
-      gap: 10px;
-      padding-top: 12px;
-      border-top: 1px solid #F1F5F9;
-    }
-
-    .social-icon {
-      width: 30px;
-      height: 30px;
-      display: flex;
+    /* Bouton WhatsApp uniquement */
+    .membre-whatsapp-btn {
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      background: #F8FAFC;
-      border-radius: 8px;
-      color: #64748B;
-      text-decoration: none;
-      transition: all 0.2s;
-    }
-
-    .social-icon svg {
-      width: 15px;
-      height: 15px;
-      fill: currentColor;
-    }
-
-    .social-icon:hover {
-      background: var(--accent-primary);
+      gap: 8px;
+      background: #25D366;
       color: white;
+      padding: 10px 20px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+      width: 100%;
+      border: none;
+      cursor: pointer;
+    }
+
+    .membre-whatsapp-btn:hover {
+      background: #128C7E;
+      transform: translateY(-2px);
+    }
+
+    .membre-whatsapp-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: white;
     }
 
     /* Section Valeurs */
@@ -366,6 +370,79 @@ const hasHeroImage = heroImage !== '';
       line-height: 1.5;
     }
 
+    /* MODAL ALERTE */
+    .alert-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .alert-modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 350px;
+      width: 90%;
+      animation: scaleIn 0.3s ease;
+    }
+
+    .alert-icon {
+      width: 60px;
+      height: 60px;
+      background: #F59E0B;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+
+    .alert-icon svg {
+      width: 30px;
+      height: 30px;
+      fill: white;
+    }
+
+    .alert-modal-content h3 {
+      font-size: 22px;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .alert-modal-content p {
+      color: #666;
+      margin-bottom: 25px;
+    }
+
+    .alert-modal-content button {
+      padding: 10px 25px;
+      background: #F59E0B;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
     @media (max-width: 768px) {
       .equipe-hero h1 { font-size: 2.5rem; }
       .valeurs-grid { grid-template-columns: 1fr; }
@@ -406,48 +483,51 @@ const hasHeroImage = heroImage !== '';
   <!-- Grille -->
   <div class="container">
     <div class="equipe-grid">
-      {membres.map(membre => (
-        <div class="membre-card">
-          <div class="membre-image">
-            {membre.frontmatter.image && membre.frontmatter.image !== "" ? (
-              <img src={membre.frontmatter.image} alt={membre.frontmatter.title} loading="lazy">
-            ) : (
-              <div class="membre-image-placeholder">
-                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                <span>Photo à venir</span>
-              </div>
-            )}
-          </div>
-          <div class="membre-content">
-            <h3 class="membre-nom">{membre.frontmatter.title}</h3>
-            <div class="membre-poste">{membre.frontmatter.poste}</div>
-            <p class="membre-bio">{membre.frontmatter.bio}</p>
-            <div class="membre-forces">
-              <span class="force-badge">
-                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                Expert
-              </span>
-              <span class="force-badge">
-                <svg viewBox="0 0 24 24"><path d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.59-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"/></svg>
-                Qualifié
-              </span>
+      {membres && membres.length > 0 ? (
+        membres.map(membre => (
+          <div class="membre-card">
+            <div class="membre-image">
+              {membre.photo_url && membre.photo_url !== "" ? (
+                <img src={membre.photo_url} alt={membre.name} loading="lazy">
+              ) : (
+                <div class="membre-image-placeholder">
+                  <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                  <span>Photo à venir</span>
+                </div>
+              )}
             </div>
-            <div class="membre-social">
-              <a href="#" class="social-icon" title="WhatsApp">
+            <div class="membre-content">
+              <h3 class="membre-nom">{membre.name}</h3>
+              <div class="membre-poste">{membre.role}</div>
+              <p class="membre-bio">{membre.bio}</p>
+              <div class="membre-forces">
+                <span class="force-badge">
+                  <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                  Expert
+                </span>
+                <span class="force-badge">
+                  <svg viewBox="0 0 24 24"><path d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.59-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"/></svg>
+                  Qualifié
+                </span>
+              </div>
+              <!-- Bouton WhatsApp uniquement -->
+              <button 
+                class="membre-whatsapp-btn" 
+                data-whatsapp="{membre.whatsapp || ''}" 
+                data-name="{membre.name}"
+                onclick="handleWhatsApp(this)"
+              >
                 <svg viewBox="0 0 24 24">
                   <path d="M19.077 4.928C17.191 3.041 14.683 2 12.006 2 6.498 2 2.017 6.482 2.002 11.99c0 1.762.458 3.482 1.33 4.998L2 22l5.232-1.372a9.97 9.97 0 0 0 4.764 1.215h.004c5.507 0 9.988-4.48 10-9.988.006-2.67-1.03-5.178-2.923-7.067zm-7.07 15.36h-.003a8.3 8.3 0 0 1-4.231-1.158l-.303-.18-3.105.814.83-3.026-.2-.317a8.257 8.257 0 0 1-1.268-4.425c.003-4.559 3.715-8.268 8.28-8.268a8.23 8.23 0 0 1 5.857 2.424 8.224 8.224 0 0 1 2.425 5.851c-.003 4.563-3.718 8.275-8.282 8.278zm4.54-6.198c-.248-.124-1.47-.726-1.698-.809-.228-.083-.394-.124-.56.124-.165.248-.644.809-.79.975-.145.165-.29.186-.538.062-.25-.124-1.05-.387-2-1.234-.74-.66-1.24-1.475-1.384-1.724-.145-.248-.015-.383.109-.507.111-.111.248-.29.372-.435.124-.145.165-.248.248-.414.083-.165.041-.31-.021-.434-.062-.124-.56-1.347-.767-1.844-.201-.483-.406-.417-.56-.425-.143-.007-.31-.009-.476-.009a.914.914 0 0 0-.663.31c-.228.248-.87.85-.87 2.073 0 1.223.89 2.405 1.015 2.57.124.166 1.753 2.676 4.246 3.753.593.256 1.056.409 1.417.524.595.189 1.137.162 1.565.098.477-.071 1.47-.6 1.677-1.18.207-.58.207-1.077.145-1.18-.062-.104-.228-.166-.476-.29z"/>
                 </svg>
-              </a>
-              <a href="#" class="social-icon" title="LinkedIn">
-                <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68zm1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
-              </a>
-              <a href="#" class="social-icon" title="Email">
-                <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-              </a>
+                Contacter sur WhatsApp
+              </button>
             </div>
           </div>
-        </div>
-      ))}
+        ))
+      ) : (
+        <p style="text-align: center; grid-column: 1/-1;">Aucun membre pour le moment.</p>
+      )}
     </div>
   </div>
 
@@ -483,4 +563,52 @@ const hasHeroImage = heroImage !== '';
       </div>
     </div>
   </section>
+
+  <!-- MODAL D'ALERTE -->
+  <div id="alert-modal" class="alert-modal">
+    <div class="alert-modal-content">
+      <div class="alert-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      </div>
+      <h3>WhatsApp non disponible</h3>
+      <p id="alert-message">Ce membre n'a pas encore de numéro WhatsApp enregistré.</p>
+      <button onclick="closeAlertModal()">Fermer</button>
+    </div>
+  </div>
+
+  <script>
+    function handleWhatsApp(button) {
+      const whatsapp = button.getAttribute('data-whatsapp');
+      const name = button.getAttribute('data-name');
+      
+      if (whatsapp && whatsapp.trim() !== '') {
+        // Formater le numéro (enlever les espaces et le +)
+        let numero = whatsapp.replace(/\s/g, '').replace(/\+/g, '');
+        // Ouvrir WhatsApp
+        window.open(`https://wa.me/${numero}?text=Bonjour%20${encodeURIComponent(name)}%2C%20je%20souhaite%20vous%20contacter%20pour%20un%20service.`, '_blank');
+      } else {
+        // Afficher le modal d'alerte
+        const modal = document.getElementById('alert-modal');
+        const message = document.getElementById('alert-message');
+        message.textContent = `${name} n'a pas encore de numéro WhatsApp enregistré.`;
+        modal.style.display = 'flex';
+      }
+    }
+    
+    function closeAlertModal() {
+      document.getElementById('alert-modal').style.display = 'none';
+    }
+    
+    // Fermer en cliquant à l'extérieur
+    window.onclick = (e) => {
+      const modal = document.getElementById('alert-modal');
+      if (e.target === modal) {
+        closeAlertModal();
+      }
+    };
+  </script>
 </BaseLayout>
