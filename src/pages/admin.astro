@@ -204,5 +204,12 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
     }
   </style>
 
-<script src="/admin.js"></script>
+<script is:inline>
+  // Charger admin.js dynamiquement
+  const script = document.createElement('script');
+  script.src = '/admin.js';
+  script.onload = () => console.log('admin.js chargé');
+  script.onerror = () => console.error('admin.js non trouvé');
+  document.head.appendChild(script);
+</script>
 </BaseLayout>
