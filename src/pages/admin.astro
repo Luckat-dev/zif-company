@@ -205,38 +205,77 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
   </style>
 
  <script is:inline>
-  document.addEventListener('DOMContentLoaded', () => {
-    // Configuration Supabase
-    const supabaseUrl = "https://hwiedciqmrcvdjyisjdb.supabase.co";
-    const supabaseAnonKey = "sb_publishable_-dssraFBzOFrNGmUhseXXQ_87IQXSdl";
+  // Vérification et affichage immédiat de l'interface selon la session
+  (function() {
     const PASSWORD = "ZifAdmin2025";
+    const loginSection = document.getElementById('login-section');
+    const adminSection = document.getElementById('admin-section');
     
-    let supabase = null;
-    let isInitialized = false;
-    
-    // Charger Supabase depuis CDN
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';
-    script.onload = () => {
-      supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
-      initAdmin();
-      isInitialized = true;
-      
-      // Si déjà connecté, charger les données après initialisation
+    // Fonction pour afficher la bonne section
+    function showCorrectSection() {
       if (localStorage.getItem('admin') === 'true') {
-        const loginSection = document.getElementById('login-section');
-        const adminSection = document.getElementById('admin-section');
         if (loginSection) loginSection.style.display = 'none';
         if (adminSection) adminSection.style.display = 'block';
-        window.loadMembersList();
+        return true;
+      } else {
+        if (loginSection) loginSection.style.display = 'flex';
+        if (adminSection) adminSection.style.display = 'none';
+        return false;
       }
-    };
-    document.head.appendChild(script);
+    }
     
-    function initAdmin() {
-      const loginContainer = document.getElementById('login-container');
-      const adminContainer = document.getElementById('admin-container');
+    // Afficher immédiatement la bonne section
+    showCorrectSection();
+    
+    // Configurer le bouton de connexion immédiatement (sans attendre Supabase)
+    const loginBtn = document.getElementById('admin-login-btn');
+    const passwordInput = document.getElementById('admin-password');
+    const errorMsg = document.getElementById('login-error');
+    
+    if (loginBtn) {
+      loginBtn.addEventListener('click', () => {
+        const enteredPassword = passwordInput ? passwordInput.value : '';
+        if (enteredPassword === PASSWORD) {
+          localStorage.setItem('admin', 'true');
+          if (loginSection) loginSection.style.display = 'none';
+          if (adminSection) adminSection.style.display = 'block';
+          // Charger les données après connexion
+          loadSupabaseAndData();
+        } else {
+          if (errorMsg) errorMsg.textContent = 'Mot de passe incorrect';
+        }
+      });
+    }
+    
+    // Si déjà connecté, charger les données
+    if (localStorage.getItem('admin') === 'true') {
+      loadSupabaseAndData();
+    }
+    
+    function loadSupabaseAndData() {
+      if (window.supabaseLoading) return;
+      window.supabaseLoading = true;
       
+      const supabaseUrl = "https://hwiedciqmrcvdjyisjdb.supabase.co";
+      const supabaseAnonKey = "sb_publishable_-dssraFBzOFrNGmUhseXXQ_87IQXSdl";
+      
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';
+      script.onload = () => {
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+        window.supabaseClient = supabase;
+        
+        // Initialiser toutes les fonctions avec supabase
+        initAdminFunctions(supabase);
+        
+        // Charger les données
+        loadMembersList(supabase);
+        loadProjectsList(supabase);
+      };
+      document.head.appendChild(script);
+    }
+    
+    function initAdminFunctions(supabase) {
       // MODAL DE NOTIFICATION GLOBAL
       window.showNotification = (message, type = 'info') => {
         if (type === 'success') {
@@ -265,7 +304,6 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
         }
       };
       
-      // MODALS GLOBAUX
       window.showErrorModal = (message) => {
         window.showNotification(message, 'error');
       };
@@ -289,8 +327,10 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
       function switchTab(tabId) {
         tabBtns.forEach(btn => btn.classList.remove('active'));
         tabContents.forEach(content => content.classList.remove('active'));
-        document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active');
-        document.getElementById(`${tabId}-tab`).classList.add('active');
+        const btn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
+        if (btn) btn.classList.add('active');
+        const tab = document.getElementById(`${tabId}-tab`);
+        if (tab) tab.classList.add('active');
       }
       
       tabBtns.forEach(btn => {
@@ -299,31 +339,6 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
         });
       });
       
-      window.checkAuth = () => {
-        if (localStorage.getItem('admin') === 'true') {
-          loginContainer.style.display = 'none';
-          adminContainer.style.display = 'block';
-          if (isInitialized) window.loadMembersList();
-          setTimeout(() => {
-            const event = new CustomEvent('admin-authenticated');
-            window.dispatchEvent(event);
-          }, 100);
-          return true;
-        }
-        return false;
-      };
-      
-      window.login = async (password) => {
-        if (password === PASSWORD) {
-          localStorage.setItem('admin', 'true');
-          loginContainer.style.display = 'none';
-          adminContainer.style.display = 'block';
-          if (isInitialized) window.loadMembersList();
-          return true;
-        }
-        return false;
-      };
-      
       window.logout = () => {
         localStorage.removeItem('admin');
         location.reload();
@@ -331,8 +346,6 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
       
       window.uploadImage = async (file, folder = 'members') => {
         if (!file) return null;
-        if (!supabase) throw new Error('Supabase non initialisé');
-        
         const fileName = Date.now() + '_' + file.name;
         const { error } = await supabase.storage
           .from('team-photos')
@@ -344,24 +357,11 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
         return publicUrl;
       };
       
-      window.loadMembersList = async () => {
-        if (!supabase) return;
-        const { data: members } = await supabase
-          .from('team')
-          .select('*')
-          .order('display_order', { ascending: true });
-        
-        const event = new CustomEvent('members-loaded', { detail: members });
-        window.dispatchEvent(event);
-      };
-      
       window.addMember = async (memberData, photoFile) => {
-        if (!supabase) throw new Error('Supabase non initialisé');
         let photoUrl = null;
         if (photoFile) {
           photoUrl = await window.uploadImage(photoFile, 'members');
         }
-      
         const { error } = await supabase.from('team').insert({
           name: memberData.name,
           role: memberData.role,
@@ -370,18 +370,15 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
           display_order: memberData.order,
           photo_url: photoUrl
         });
-      
         if (error) throw error;
-        await window.loadMembersList();
+        await loadMembersList(supabase);
       };
       
       window.updateMember = async (id, memberData, photoFile) => {
-        if (!supabase) throw new Error('Supabase non initialisé');
         let photoUrl = null;
         if (photoFile) {
           photoUrl = await window.uploadImage(photoFile, 'members');
         }
-      
         const { error } = await supabase.from('team').update({
           name: memberData.name,
           role: memberData.role,
@@ -390,38 +387,21 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
           display_order: memberData.order,
           photo_url: photoUrl
         }).eq('id', id);
-      
         if (error) throw error;
-        await window.loadMembersList();
+        await loadMembersList(supabase);
       };
       
       window.deleteMember = async (id) => {
-        if (!supabase) return;
         const { error } = await supabase.from('team').delete().eq('id', id);
         if (error) throw error;
-        await window.loadMembersList();
-      };
-      
-      // ========== FONCTIONS PROJETS ==========
-      
-      window.loadProjectsList = async () => {
-        if (!supabase) return;
-        const { data: projects } = await supabase
-          .from('projects')
-          .select('*')
-          .order('created_at', { ascending: false });
-        
-        const event = new CustomEvent('projects-loaded', { detail: projects });
-        window.dispatchEvent(event);
+        await loadMembersList(supabase);
       };
       
       window.addProject = async (projectData, imageFile) => {
-        if (!supabase) throw new Error('Supabase non initialisé');
         let imageUrl = null;
         if (imageFile) {
           imageUrl = await window.uploadImage(imageFile, 'projects');
         }
-      
         const { error } = await supabase.from('projects').insert({
           title: projectData.title,
           categorie: projectData.categorie,
@@ -430,18 +410,15 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
           description: projectData.description,
           image_url: imageUrl
         });
-      
         if (error) throw error;
-        if (window.loadProjectsList) await window.loadProjectsList();
+        await loadProjectsList(supabase);
       };
       
       window.updateProject = async (id, projectData, imageFile) => {
-        if (!supabase) throw new Error('Supabase non initialisé');
         let imageUrl = null;
         if (imageFile) {
           imageUrl = await window.uploadImage(imageFile, 'projects');
         }
-      
         const { error } = await supabase.from('projects').update({
           title: projectData.title,
           categorie: projectData.categorie,
@@ -450,16 +427,14 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
           description: projectData.description,
           image_url: imageUrl
         }).eq('id', id);
-      
         if (error) throw error;
-        if (window.loadProjectsList) await window.loadProjectsList();
+        await loadProjectsList(supabase);
       };
       
       window.deleteProject = async (id) => {
-        if (!supabase) return;
         const { error } = await supabase.from('projects').delete().eq('id', id);
         if (error) throw error;
-        if (window.loadProjectsList) await window.loadProjectsList();
+        await loadProjectsList(supabase);
       };
       
       window.onclick = (e) => {
@@ -489,28 +464,25 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
         resizeImages();
       });
       resizeObserver.observe(document.body, { childList: true, subtree: true });
-      
-      // Connecter le bouton de connexion
-      const loginBtn = document.getElementById('admin-login-btn');
-      const passwordInput = document.getElementById('admin-password');
-      const errorMsg = document.getElementById('login-error');
-      const loginSection = document.getElementById('login-section');
-      const adminSection = document.getElementById('admin-section');
-      
-      if (loginBtn) {
-        loginBtn.addEventListener('click', () => {
-          const enteredPassword = passwordInput ? passwordInput.value : '';
-          if (enteredPassword === PASSWORD) {
-            localStorage.setItem('admin', 'true');
-            if (loginSection) loginSection.style.display = 'none';
-            if (adminSection) adminSection.style.display = 'block';
-            if (isInitialized) window.loadMembersList();
-          } else {
-            if (errorMsg) errorMsg.textContent = 'Mot de passe incorrect';
-          }
-        });
-      }
     }
-  });
+    
+    async function loadMembersList(supabase) {
+      const { data: members } = await supabase
+        .from('team')
+        .select('*')
+        .order('display_order', { ascending: true });
+      const event = new CustomEvent('members-loaded', { detail: members });
+      window.dispatchEvent(event);
+    }
+    
+    async function loadProjectsList(supabase) {
+      const { data: projects } = await supabase
+        .from('projects')
+        .select('*')
+        .order('created_at', { ascending: false });
+      const event = new CustomEvent('projects-loaded', { detail: projects });
+      window.dispatchEvent(event);
+    }
+  })();
 </script>
 </BaseLayout>
