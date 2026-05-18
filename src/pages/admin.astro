@@ -289,6 +289,7 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
     };
     
     window.login = async (password) => {
+<<<<<<< HEAD
       if (password === PASSWORD) {
         localStorage.setItem('admin', 'true');
         loginContainer.style.display = 'none';
@@ -299,6 +300,19 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
       return false;
     };
     
+=======
+  if (password === PASSWORD) {
+    const token = btoa(password + ':' + Date.now());
+    window.setAdminToken(token);
+    localStorage.setItem('admin', 'true');
+    loginContainer.style.display = 'none';
+    adminContainer.style.display = 'block';
+    window.loadMembersList();
+    return true;
+  }
+  return false;
+};
+>>>>>>> de44fd0cdbd633a6c9062fdc912a07733cb8395d
     window.logout = () => {
       localStorage.removeItem('admin');
       location.reload();
@@ -329,6 +343,7 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
     };
     
     window.addMember = async (memberData, photoFile) => {
+<<<<<<< HEAD
       let photoUrl = null;
       if (photoFile) {
         photoUrl = await window.uploadImage(photoFile, 'members');
@@ -428,6 +443,164 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
       if (window.loadProjectsList) await window.loadProjectsList();
     };
     
+=======
+  let photoUrl = null;
+  if (photoFile) {
+    photoUrl = await window.uploadImage(photoFile, 'members');
+  }
+
+  const response = await fetch('/.netlify/functions/add-member', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${window.getAdminToken()}`
+    },
+    body: JSON.stringify({
+      name: memberData.name,
+      role: memberData.role,
+      bio: memberData.bio,
+      whatsapp: memberData.whatsapp,
+      display_order: memberData.order,
+      photo_url: photoUrl
+    })
+  });
+
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error);
+  
+  await window.loadMembersList();
+};
+    
+    window.updateMember = async (id, memberData, photoFile) => {
+  let photoUrl = null;
+  if (photoFile) {
+    photoUrl = await window.uploadImage(photoFile, 'members');
+  }
+
+  const response = await fetch('/.netlify/functions/update-member', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${window.getAdminToken()}`
+    },
+    body: JSON.stringify({
+      id: id,
+      name: memberData.name,
+      role: memberData.role,
+      bio: memberData.bio,
+      whatsapp: memberData.whatsapp,
+      display_order: memberData.order,
+      photo_url: photoUrl
+    })
+  });
+
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error);
+  
+  await window.loadMembersList();
+};
+    window.deleteMember = async (id) => {
+  const response = await fetch('/.netlify/functions/delete-member', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${window.getAdminToken()}`
+    },
+    body: JSON.stringify({ id: id })
+  });
+
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error);
+  
+  await window.loadMembersList();
+};
+
+
+
+// ========== FONCTIONS PROJETS ==========
+
+// Ajouter un projet
+window.addProject = async (projectData, imageFile) => {
+  let imageUrl = null;
+  if (imageFile) {
+    imageUrl = await window.uploadImage(imageFile, 'projects');
+  }
+
+  const response = await fetch('/.netlify/functions/add-project', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${window.getAdminToken()}`
+    },
+    body: JSON.stringify({
+      title: projectData.title,
+      categorie: projectData.categorie,
+      ville: projectData.ville,
+      annee: projectData.annee,
+      description: projectData.description,
+      image_url: imageUrl
+    })
+  });
+
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error);
+  
+  if (window.loadProjectsList) {
+    await window.loadProjectsList();
+  }
+};
+
+// Modifier un projet
+window.updateProject = async (id, projectData, imageFile) => {
+  let imageUrl = null;
+  if (imageFile) {
+    imageUrl = await window.uploadImage(imageFile, 'projects');
+  }
+
+  const response = await fetch('/.netlify/functions/update-project', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${window.getAdminToken()}`
+    },
+    body: JSON.stringify({
+      id: id,
+      title: projectData.title,
+      categorie: projectData.categorie,
+      ville: projectData.ville,
+      annee: projectData.annee,
+      description: projectData.description,
+      image_url: imageUrl
+    })
+  });
+
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error);
+  
+  if (window.loadProjectsList) {
+    await window.loadProjectsList();
+  }
+};
+
+// Supprimer un projet
+window.deleteProject = async (id) => {
+  const response = await fetch('/.netlify/functions/delete-project', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${window.getAdminToken()}`
+    },
+    body: JSON.stringify({ id: id })
+  });
+
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error);
+  
+  if (window.loadProjectsList) {
+    await window.loadProjectsList();
+  }
+};
+>>>>>>> de44fd0cdbd633a6c9062fdc912a07733cb8395d
     checkAuth();
     
     window.onclick = (e) => {
@@ -437,7 +610,11 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
       if (e.target === successModal) window.closeGlobalSuccessModal();
     };
 
+<<<<<<< HEAD
     // Forcer la taille des images
+=======
+    // Forcer la taille des images (exécution unique et discrète)
+>>>>>>> de44fd0cdbd633a6c9062fdc912a07733cb8395d
     function resizeImages() {
       const images = document.querySelectorAll('.project-item img, .member-card img');
       images.forEach(img => {
@@ -453,10 +630,30 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
       });
     }
 
+<<<<<<< HEAD
     setTimeout(resizeImages, 100);
+=======
+    // Exécuter au chargement et après les mises à jour
+    setTimeout(resizeImages, 100);
+
+    // Observer les nouvelles images sans boucler en continu
+>>>>>>> de44fd0cdbd633a6c9062fdc912a07733cb8395d
     const resizeObserver = new MutationObserver(() => {
       resizeImages();
     });
     resizeObserver.observe(document.body, { childList: true, subtree: true });
+<<<<<<< HEAD
+=======
+
+    
+    // Dans le script de admin.astro
+window.getAdminToken = () => {
+  return localStorage.getItem('admin_token');
+};
+
+window.setAdminToken = (token) => {
+  localStorage.setItem('admin_token', token);
+};
+>>>>>>> de44fd0cdbd633a6c9062fdc912a07733cb8395d
   </script>
 </BaseLayout>

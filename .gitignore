@@ -22,3 +22,7 @@ Thumbs.db
 *.log
 # Local Netlify folder
 .netlify
+<<<<<<< HEAD
+=======
+netlify.toml
+>>>>>>> de44fd0cdbd633a6c9062fdc912a07733cb8395d
