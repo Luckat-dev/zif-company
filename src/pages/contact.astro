@@ -1,0 +1,685 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Photos du carousel (à changer manuellement)
+const carouselSlides = [
+  {
+    image: "/images/carousel/slide1.jpg",
+    title: "ZIF COMPANY",
+    subtitle: "Votre partenaire en soudure et formation"
+  },
+  {
+    image: "/images/carousel/slide2.jpg",
+    title: "Expertise & Qualité",
+    subtitle: "Plus de 10 ans d'expérience à votre service"
+  },
+  {
+    image: "/images/carousel/slide3.jpg",
+    title: "Nous contacter",
+    subtitle: "Une équipe à votre écoute"
+  }
+];
+
+const contactInfo = {
+  phone: "+243 851 954 930",
+  whatsappNumber: "243851954930",
+  email: "zifcompany@email.com",
+  villes: ["Bukavu", "Goma", "Kinshasa"],
+  horaires: [
+    { jour: "Lundi - Vendredi", heures: "8h00 - 18h00" },
+    { jour: "Samedi", heures: "8h00 - 15h00" },
+    { jour: "Dimanche", heures: "Fermé" }
+  ]
+};
+
+// Formations
+const formations = [
+  {
+    titre: "Soudure à l'arc (MMA)",
+    duree: "3 mois",
+    niveau: "Débutant à Avancé",
+    description: "Maîtrisez les techniques de soudure à l'arc électrique. Formation pratique à 80%."
+  },
+  {
+    titre: "Soudure MIG/MAG",
+    duree: "2 mois",
+    niveau: "Intermédiaire",
+    description: "Apprenez la soudure semi-automatique pour les travaux de précision et de production."
+  },
+  {
+    titre: "Soudure TIG",
+    duree: "3 mois",
+    niveau: "Avancé",
+    description: "Technique de soudure de haute précision pour l'inox et l'aluminium."
+  },
+  {
+    titre: "Lecture de plans",
+    duree: "1 mois",
+    niveau: "Tous niveaux",
+    description: "Apprenez à lire et interpréter les plans techniques en construction métallique."
+  }
+];
+---
+
+<BaseLayout title="Contact">
+  <style>
+    :root {
+      --accent-primary: #3B82F6;
+      --accent-secondary: #1D4ED8;
+    }
+
+    /* ===== CAROUSEL HERO ===== */
+    .carousel-hero {
+      position: relative;
+      height: 500px;
+      overflow: hidden;
+      margin-top: -40px;
+      margin-bottom: 60px;
+    }
+
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .carousel-slides {
+      display: flex;
+      width: 300%;
+      height: 100%;
+      animation: slideAnimation 15s infinite;
+    }
+
+    .carousel-slide {
+      width: 33.333%;
+      height: 100%;
+      position: relative;
+    }
+
+    .carousel-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .carousel-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+    }
+
+    .carousel-content h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 800;
+      margin-bottom: 15px;
+      text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .carousel-content p {
+      font-size: 1.3rem;
+      opacity: 0.95;
+    }
+
+    .carousel-nav {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 10;
+    }
+
+    .carousel-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+      border: 2px solid rgba(255,255,255,0.6);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .carousel-dot.active {
+      background: white;
+      transform: scale(1.2);
+    }
+
+    @keyframes slideAnimation {
+      0%, 28% { transform: translateX(0); }
+      33%, 61% { transform: translateX(-33.333%); }
+      66%, 94% { transform: translateX(-66.666%); }
+      100% { transform: translateX(0); }
+    }
+
+    /* ===== CONTACT INFO SECTION ===== */
+    .contact-section {
+      padding: 20px 0 60px;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 50px;
+      margin-bottom: 60px;
+    }
+
+    /* Carte info */
+    .info-card {
+      background: #FFFFFF;
+      padding: 35px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      border: 1px solid #EEF2F6;
+    }
+
+    .info-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    .info-icon {
+      width: 45px;
+      height: 45px;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .info-icon svg {
+      width: 22px;
+      height: 22px;
+      fill: white;
+    }
+
+    .info-header h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #0F172A;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .contact-item svg {
+      width: 20px;
+      height: 20px;
+      fill: var(--accent-primary);
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+
+    .contact-item-content h4 {
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 5px;
+    }
+
+    .contact-item-content p {
+      color: #64748B;
+      line-height: 1.6;
+    }
+
+    /* Horaires */
+    .horaires-list {
+      margin-top: 15px;
+    }
+
+    .horaire-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #F1F5F9;
+    }
+
+    .horaire-item:last-child {
+      border-bottom: none;
+    }
+
+    .horaire-jour {
+      font-weight: 600;
+      color: #0F172A;
+    }
+
+    .horaire-heures {
+      color: var(--accent-primary);
+      font-weight: 500;
+    }
+
+    /* Carte WhatsApp - GROS BOUTON */
+    .whatsapp-card {
+      background: #FFFFFF;
+      padding: 35px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      border: 1px solid #EEF2F6;
+      text-align: center;
+    }
+
+    .whatsapp-icon {
+      width: 80px;
+      height: 80px;
+      background: #25D366;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+
+    .whatsapp-icon svg {
+      width: 45px;
+      height: 45px;
+      fill: white;
+    }
+
+    .whatsapp-card h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 10px;
+    }
+
+    .whatsapp-card p {
+      color: #64748B;
+      margin-bottom: 25px;
+    }
+
+    .btn-whatsapp {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: #25D366;
+      color: white;
+      padding: 18px 35px;
+      border-radius: 50px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.3s;
+      box-shadow: 0 5px 20px rgba(37, 211, 102, 0.3);
+    }
+
+    .btn-whatsapp:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
+    }
+
+    .btn-whatsapp svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+    }
+
+    /* ===== SECTION TECHNIQUES DE SOUDURE ===== */
+    .techniques-section {
+      padding: 60px 0;
+      background: #F8FAFC;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .section-header h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 10px;
+    }
+
+    .section-header p {
+      color: #64748B;
+      font-size: 1.1rem;
+    }
+
+    .techniques-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
+
+    .technique-card {
+      background: #FFFFFF;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+      border: 1px solid #EEF2F6;
+      transition: all 0.25s;
+    }
+
+    .technique-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 30px rgba(59, 130, 246, 0.08);
+      border-color: var(--accent-primary);
+    }
+
+    .technique-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #DBEAFE, #BFDBFE);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .technique-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--accent-primary);
+    }
+
+    .technique-card h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 12px;
+    }
+
+    .technique-card p {
+      color: #64748B;
+      line-height: 1.6;
+      font-size: 0.9rem;
+    }
+
+    /* ===== SECTION FORMATIONS ===== */
+    .formations-section {
+      padding: 60px 0;
+      background: #F8FAFC;
+      border-radius: 30px 30px 0 0;
+    }
+
+    .formations-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
+
+    .formation-card {
+      background: #FFFFFF;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+      border: 1px solid #EEF2F6;
+      transition: all 0.25s;
+    }
+
+    .formation-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 30px rgba(59, 130, 246, 0.08);
+      border-color: var(--accent-primary);
+    }
+
+    .formation-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #DBEAFE, #BFDBFE);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .formation-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--accent-primary);
+    }
+
+    .formation-card h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 12px;
+    }
+
+    .formation-meta {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+      font-size: 0.8rem;
+      color: #64748B;
+    }
+
+    .formation-meta span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .formation-meta svg {
+      width: 14px;
+      height: 14px;
+      fill: var(--accent-primary);
+    }
+
+    .formation-card p {
+      color: #64748B;
+      line-height: 1.6;
+      font-size: 0.9rem;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .carousel-hero {
+        height: 400px;
+      }
+      .carousel-content h2 {
+        font-size: 2.2rem;
+      }
+      .carousel-content p {
+        font-size: 1rem;
+      }
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <!-- CAROUSEL HERO -->
+  <section class="carousel-hero">
+    <div class="carousel-container">
+      <div class="carousel-slides">
+        {carouselSlides.map(slide => (
+          <div class="carousel-slide">
+            <img src={slide.image} alt={slide.title}>
+            <div class="carousel-overlay">
+              <div class="carousel-content">
+                <h2>{slide.title}</h2>
+                <p>{slide.subtitle}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div class="carousel-nav">
+        <span class="carousel-dot active"></span>
+        <span class="carousel-dot"></span>
+        <span class="carousel-dot"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT SECTION -->
+  <div class="container">
+    <div class="contact-section">
+      <div class="contact-grid">
+        <!-- Informations de contact -->
+        <div class="info-card">
+          <div class="info-header">
+            <div class="info-icon">
+              <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/></svg>
+            </div>
+            <h3>Coordonnées</h3>
+          </div>
+          
+          <div class="contact-item">
+            <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+            <div class="contact-item-content">
+              <h4>Téléphone</h4>
+              <p>{contactInfo.phone}</p>
+            </div>
+          </div>
+          
+          <div class="contact-item">
+            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            <div class="contact-item-content">
+              <h4>Email</h4>
+              <p>{contactInfo.email}</p>
+            </div>
+          </div>
+          
+          <div class="contact-item">
+  <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+  <div class="contact-item-content">
+    <h4>Villes d'intervention</h4>
+    {contactInfo.villes.map(ville => (
+      <p>{ville}</p>
+    ))}
+  </div>
+</div>
+
+          <div style="margin-top: 25px;">
+            <div class="info-header">
+              <div class="info-icon">
+                <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg>
+              </div>
+              <h3>Horaires d'ouverture</h3>
+            </div>
+            <div class="horaires-list">
+              {contactInfo.horaires.map(h => (
+                <div class="horaire-item">
+                  <span class="horaire-jour">{h.jour}</span>
+                  <span class="horaire-heures">{h.heures}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <!-- GROS BOUTON WHATSAPP -->
+        <div class="whatsapp-card">
+          <div class="whatsapp-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M19.077 4.928C17.191 3.041 14.683 2 12.006 2 6.498 2 2.017 6.482 2.002 11.99c0 1.762.458 3.482 1.33 4.998L2 22l5.232-1.372a9.97 9.97 0 0 0 4.764 1.215h.004c5.507 0 9.988-4.48 10-9.988.006-2.67-1.03-5.178-2.923-7.067zm-7.07 15.36h-.003a8.3 8.3 0 0 1-4.231-1.158l-.303-.18-3.105.814.83-3.026-.2-.317a8.257 8.257 0 0 1-1.268-4.425c.003-4.559 3.715-8.268 8.28-8.268a8.23 8.23 0 0 1 5.857 2.424 8.224 8.224 0 0 1 2.425 5.851c-.003 4.563-3.718 8.275-8.282 8.278zm4.54-6.198c-.248-.124-1.47-.726-1.698-.809-.228-.083-.394-.124-.56.124-.165.248-.644.809-.79.975-.145.165-.29.186-.538.062-.25-.124-1.05-.387-2-1.234-.74-.66-1.24-1.475-1.384-1.724-.145-.248-.015-.383.109-.507.111-.111.248-.29.372-.435.124-.145.165-.248.248-.414.083-.165.041-.31-.021-.434-.062-.124-.56-1.347-.767-1.844-.201-.483-.406-.417-.56-.425-.143-.007-.31-.009-.476-.009a.914.914 0 0 0-.663.31c-.228.248-.87.85-.87 2.073 0 1.223.89 2.405 1.015 2.57.124.166 1.753 2.676 4.246 3.753.593.256 1.056.409 1.417.524.595.189 1.137.162 1.565.098.477-.071 1.47-.6 1.677-1.18.207-.58.207-1.077.145-1.18-.062-.104-.228-.166-.476-.29z"/>
+            </svg>
+          </div>
+          <h3>Contactez-nous directement</h3>
+          <p>Une question ? Un devis ? Notre équipe vous répond rapidement sur WhatsApp</p>
+          <a href={`https://wa.me/${contactInfo.whatsappNumber}?text=Bonjour%20ZIF%20COMPANY%2C%20je%20souhaite%20avoir%20plus%20d%27informations`} class="btn-whatsapp" target="_blank">
+            <svg viewBox="0 0 24 24">
+              <path d="M19.077 4.928C17.191 3.041 14.683 2 12.006 2 6.498 2 2.017 6.482 2.002 11.99c0 1.762.458 3.482 1.33 4.998L2 22l5.232-1.372a9.97 9.97 0 0 0 4.764 1.215h.004c5.507 0 9.988-4.48 10-9.988.006-2.67-1.03-5.178-2.923-7.067zm-7.07 15.36h-.003a8.3 8.3 0 0 1-4.231-1.158l-.303-.18-3.105.814.83-3.026-.2-.317a8.257 8.257 0 0 1-1.268-4.425c.003-4.559 3.715-8.268 8.28-8.268a8.23 8.23 0 0 1 5.857 2.424 8.224 8.224 0 0 1 2.425 5.851c-.003 4.563-3.718 8.275-8.282 8.278zm4.54-6.198c-.248-.124-1.47-.726-1.698-.809-.228-.083-.394-.124-.56.124-.165.248-.644.809-.79.975-.145.165-.29.186-.538.062-.25-.124-1.05-.387-2-1.234-.74-.66-1.24-1.475-1.384-1.724-.145-.248-.015-.383.109-.507.111-.111.248-.29.372-.435.124-.145.165-.248.248-.414.083-.165.041-.31-.021-.434-.062-.124-.56-1.347-.767-1.844-.201-.483-.406-.417-.56-.425-.143-.007-.31-.009-.476-.009a.914.914 0 0 0-.663.31c-.228.248-.87.85-.87 2.073 0 1.223.89 2.405 1.015 2.57.124.166 1.753 2.676 4.246 3.753.593.256 1.056.409 1.417.524.595.189 1.137.162 1.565.098.477-.071 1.47-.6 1.677-1.18.207-.58.207-1.077.145-1.18-.062-.104-.228-.166-.476-.29z"/>
+            </svg>
+            Nous contacter sur WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION TECHNIQUES DE SOUDURE -->
+  <section class="techniques-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Les techniques de soudure</h2>
+        <p>Découvrez les différents procédés que nous maîtrisons</p>
+      </div>
+      
+      <div class="techniques-grid">
+        <div class="technique-card">
+          <div class="technique-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"/></svg>
+          </div>
+          <h3>Soudure MIG/MAG</h3>
+          <p><strong>MIG (Metal Inert Gas)</strong> et <strong>MAG (Metal Active Gas)</strong> sont des procédés de soudage semi-automatiques. Ils utilisent un fil-électrode consommable et un gaz de protection. Idéal pour l'acier, l'inox et l'aluminium. Rapide et efficace pour les grandes surfaces.</p>
+        </div>
+
+        <div class="technique-card">
+          <div class="technique-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"/></svg>
+          </div>
+          <h3>Soudure MMA (Électrode enrobée)</h3>
+          <p><strong>MMA (Manual Metal Arc)</strong>, aussi appelée soudure à l'arc. Technique manuelle utilisant une électrode enrobée. Très polyvalente, elle résiste bien aux conditions extérieures (vent, humidité). Parfaite pour les travaux de construction et de réparation.</p>
+        </div>
+
+        <div class="technique-card">
+          <div class="technique-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"/></svg>
+          </div>
+          <h3>Soudure TIG</h3>
+          <p><strong>TIG (Tungsten Inert Gas)</strong> est un procédé de haute précision. Une électrode en tungstène non consommable crée l'arc, tandis qu'une baguette d'apport est ajoutée manuellement. Idéal pour les soudures esthétiques sur inox, aluminium, cuivre, et pour les travaux fins.</p>
+        </div>
+
+        <div class="technique-card">
+          <div class="technique-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"/></svg>
+          </div>
+          <h3>Soudure à la flamme (Chalumeau)</h3>
+          <p>Technique traditionnelle utilisant un chalumeau oxyacétylénique. Idéal pour les travaux de brasage et de soudage sur tôles fines, cuivre et métaux non ferreux. Permet un excellent contrôle de la température.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION FORMATIONS -->
+  <section class="formations-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Nos formations professionnelles</h2>
+        <p>Développez vos compétences avec nos formations certifiantes</p>
+      </div>
+      
+      <div class="formations-grid">
+        {formations.map(formation => (
+          <div class="formation-card">
+            <div class="formation-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg>
+            </div>
+            <h3>{formation.titre}</h3>
+            <div class="formation-meta">
+              <span>
+                <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg>
+                {formation.duree}
+              </span>
+              <span>
+                <svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"/></svg>
+                {formation.niveau}
+              </span>
+            </div>
+            <p>{formation.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Espacement -->
+  <div style="padding: 20px 0;"></div>
+</BaseLayout>

@@ -1,0 +1,380 @@
+<div class="list-card">
+  <div class="card-header">
+    <h2>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+      </svg>
+      Liste des membres
+    </h2>
+    <span class="members-badge" id="members-count">0</span>
+  </div>
+  <div id="members-list-container" class="members-grid"></div>
+</div>
+
+<style>
+  .list-card {
+    background: white;
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    border: 1px solid #eef2f6;
+  }
+  
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f1f5f9;
+  }
+  
+  .card-header h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .members-badge {
+    background: linear-gradient(135deg, #3B82F6, #2563EB);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 40px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(59,130,246,0.3);
+  }
+  
+  /* GRILLE DE CARTES - ESPACES VISIBLES */
+  .members-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-height: 650px;
+    overflow-y: auto;
+    padding: 4px 8px 4px 4px;
+  }
+  
+  /* CARTE MEMBRE - UNIQUE ET SÉPARÉE */
+  .member-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 0;
+  }
+  
+  .member-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 30px -12px rgba(59, 130, 246, 0.3);
+    border-color: #3B82F6;
+  }
+  
+  /* En-tête coloré de la carte */
+  .member-card-header {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .member-avatar {
+    width: 70px;
+    height: 70px;
+    min-width: 70px;
+    background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+  }
+  
+  .member-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .avatar-placeholder svg {
+    width: 36px;
+    height: 36px;
+    stroke: white;
+  }
+  
+  .member-info {
+    flex: 1;
+  }
+  
+  .member-info strong {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    display: block;
+    margin-bottom: 6px;
+  }
+  
+  .member-role {
+    font-size: 12px;
+    color: #3B82F6;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: rgba(59,130,246,0.1);
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+  
+  /* Corps de la carte */
+  .member-card-body {
+    padding: 20px 24px;
+    background: white;
+  }
+  
+  .member-bio {
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  
+  /* Badges */
+  .member-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  
+  .badge-warning {
+    background: #fef3c7;
+    color: #d97706;
+  }
+  
+  .badge-warning svg {
+    stroke: #d97706;
+  }
+  
+  .badge-success {
+    background: #d1fae5;
+    color: #059669;
+  }
+  
+  .badge-success svg {
+    stroke: #059669;
+  }
+  
+  /* Pied de carte - Boutons colorés et espacés */
+  .member-card-footer {
+    display: flex;
+    gap: 16px;
+    padding: 16px 24px;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+  }
+  
+  .edit-btn, .delete-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex: 1;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  
+  .edit-btn {
+    background: linear-gradient(135deg, #F59E0B, #D97706);
+    color: white;
+    box-shadow: 0 2px 8px rgba(245,158,11,0.3);
+  }
+  
+  .edit-btn:hover {
+    background: linear-gradient(135deg, #D97706, #B45309);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(245,158,11,0.4);
+  }
+  
+  .delete-btn {
+    background: linear-gradient(135deg, #EF4444, #DC2626);
+    color: white;
+    box-shadow: 0 2px 8px rgba(239,68,68,0.3);
+  }
+  
+  .delete-btn:hover {
+    background: linear-gradient(135deg, #DC2626, #B91C1C);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239,68,68,0.4);
+  }
+  
+  .edit-btn svg, .delete-btn svg {
+    width: 16px;
+    height: 16px;
+    stroke: white;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 60px;
+    color: #94a3b8;
+    font-size: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* Barre de défilement */
+  .members-grid::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .members-grid::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+  }
+  
+  .members-grid::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+  }
+  
+  .members-grid::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+
+  /* Responsive */
+  @media (max-width: 750px) {
+    .member-card-header {
+      flex-direction: column;
+      text-align: center;
+    }
+    .member-card-footer {
+      flex-direction: column;
+    }
+  }
+</style>
+
+<script>
+  let currentMembers = [];
+  
+  window.addEventListener('members-loaded', (e) => {
+    currentMembers = e.detail || [];
+    renderMembers();
+  });
+  
+  function renderMembers() {
+    const container = document.getElementById('members-list-container');
+    const countSpan = document.getElementById('members-count');
+    
+    if (!currentMembers || currentMembers.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          <span>Aucun membre enregistré</span>
+        </div>
+      `;
+      if (countSpan) countSpan.textContent = '0';
+      return;
+    }
+    
+    if (countSpan) countSpan.textContent = currentMembers.length;
+    
+    container.innerHTML = currentMembers.map(m => `
+      <div class="member-card" data-id="${m.id}">
+        <div class="member-card-header">
+          <div class="member-avatar">
+            ${m.photo_url ? 
+              `<img src="${m.photo_url}" alt="${m.name}" />` :
+              `<div class="avatar-placeholder">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+              </div>`
+            }
+          </div>
+          <div class="member-info">
+            <strong>${escapeHtml(m.name)}</strong>
+            <div class="member-role">${escapeHtml(m.role)}</div>
+          </div>
+        </div>
+        <div class="member-card-body">
+          <div class="member-bio">${escapeHtml(m.bio?.substring(0, 120))}${m.bio?.length > 120 ? '...' : ''}</div>
+          <div class="member-tags">
+            ${!m.photo_url ? `
+              <span class="badge badge-warning">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="18" height="18" rx="2"/>
+                  <circle cx="9" cy="9" r="1"/>
+                  <circle cx="15" cy="15" r="1"/>
+                </svg>
+                Sans photo
+              </span>
+            ` : ''}
+            ${m.whatsapp ? `
+              <span class="badge badge-success">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                </svg>
+                ${escapeHtml(m.whatsapp)}
+              </span>
+            ` : ''}
+          </div>
+        </div>
+        <div class="member-card-footer">
+          <button class="edit-btn" onclick="window.openEditModal(${m.id})"
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 3l4 4-7 7H10v-4l7-7z"/>
+              <path d="M4 20h16"/>
+            </svg>
+            Modifier
+          </button>
+          <button class="delete-btn" onclick="window.openDeleteModal(${m.id})"
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 7h16M10 11v6M14 11v6M5 7l1 13a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-13"/>
+              <path d="M9 3h6a1 1 0 0 1 1 1v3H8V4a1 1 0 0 1 1-1z"/>
+            </svg>
+            Supprimer
+          </button>
+        </div>
+      </div>
+    `).join('');
+  }
+  
+  function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+</script>

@@ -1,0 +1,488 @@
+
+<div class="projects-container">
+  <!-- Formulaire d'ajout -->
+  <div class="form-card">
+    <h2>➕ Ajouter un projet</h2>
+    <form id="add-project-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Titre *</label>
+          <input type="text" id="project-title" placeholder="Ex: Escalier hélicoïdal" required />
+        </div>
+        <div class="form-group">
+          <label>Catégorie *</label>
+          <input type="text" id="project-category" placeholder="Ex: Design & Conception" required />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Ville</label>
+          <input type="text" id="project-city" placeholder="Ex: Goma" />
+        </div>
+        <div class="form-group">
+          <label>Année</label>
+          <input type="text" id="project-year" placeholder="Ex: 2026" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="project-description" rows="3" placeholder="Description du projet..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Photo *</label>
+        <input type="file" id="project-image" accept="image/*" required />
+        <small style="color:#666;">Format recommandé: 800x600px</small>
+      </div>
+      <button type="submit" class="submit-btn">Ajouter le projet</button>
+    </form>
+  </div>
+
+  <!-- Liste des projets -->
+  <div class="list-card">
+    <div class="card-header">
+      <h2>📋 Liste des projets</h2>
+      <span class="projects-badge" id="projects-count">0</span>
+    </div>
+    <div id="projects-list" class="projects-list"></div>
+  </div>
+</div>
+
+<!-- MODAL MODIFICATION -->
+<div id="edit-project-modal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>✏️ Modifier le projet</h3>
+      <span class="close-modal" onclick="closeEditProjectModal()">&times;</span>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-project-id" />
+      <div class="form-group"><label>Titre</label><input type="text" id="edit-project-title" /></div>
+      <div class="form-group"><label>Catégorie</label><input type="text" id="edit-project-category" /></div>
+      <div class="form-row">
+        <div class="form-group"><label>Ville</label><input type="text" id="edit-project-city" /></div>
+        <div class="form-group"><label>Année</label><input type="text" id="edit-project-year" /></div>
+      </div>
+      <div class="form-group"><label>Description</label><textarea id="edit-project-description" rows="3"></textarea></div>
+      <div class="form-group"><label>Nouvelle photo</label><input type="file" id="edit-project-image" accept="image/*" /></div>
+      <small>Laissez vide pour garder la photo actuelle</small>
+      <div id="current-project-photo" style="margin-top: 10px; display: none;">
+        <label>Photo actuelle :</label>
+        <img id="current-project-img" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; margin-top: 5px;" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeEditProjectModal()">Annuler</button>
+      <button class="btn-save" onclick="saveEditProject()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SUPPRESSION -->
+<div id="delete-project-modal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>🗑️ Confirmer la suppression</h3>
+      <span class="close-modal" onclick="closeDeleteProjectModal()">&times;</span>
+    </div>
+    <div class="modal-body">
+      <p>Êtes-vous sûr de vouloir supprimer ce projet ?</p>
+      <p style="color: red; font-size: 14px;">Cette action est irréversible.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeDeleteProjectModal()">Annuler</button>
+      <button class="btn-delete" onclick="confirmDeleteProject()">Supprimer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SUCCÈS -->
+<div id="project-success-modal" class="modal success-modal">
+  <div class="modal-content success-content">
+    <div class="success-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+    </div>
+    <h3>Succès !</h3>
+    <p id="project-success-message">Opération réussie</p>
+    <button class="success-btn" onclick="closeProjectSuccessModal()">Continuer</button>
+  </div>
+</div>
+
+<style>
+  .projects-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 25px;
+  }
+  .form-card, .list-card {
+    background: white;
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border: 1px solid #eef2f6;
+  }
+  .form-card h2, .list-card h2 {
+    margin-bottom: 20px;
+    font-size: 18px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f0f2f5;
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+  .form-group {
+    margin-bottom: 15px;
+  }
+  .form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #333;
+  }
+  .form-group input, .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+  }
+  .submit-btn {
+    width: 100%;
+    padding: 12px;
+    background: #10B981;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .projects-badge {
+    background: linear-gradient(135deg, #3B82F6, #2563EB);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .projects-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-height: 500px;
+    overflow-y: auto;
+  }
+  .project-item {
+    background: #f9f9f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    transition: all 0.2s;
+  }
+  .project-item:hover {
+    border-color: #3B82F6;
+    box-shadow: 0 2px 8px rgba(59,130,246,0.1);
+  }
+  .project-item img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  .project-info {
+    flex: 1;
+  }
+  .project-info h4 {
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: #1e293b;
+  }
+  .project-info p {
+    font-size: 12px;
+    color: #64748b;
+    margin: 3px 0;
+  }
+  .project-actions {
+    display: flex;
+    gap: 8px;
+  }
+  .edit-btn, .delete-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .edit-btn { background: #F59E0B; color: white; }
+  .delete-btn { background: #EF4444; color: white; }
+  .empty-state { text-align: center; padding: 40px; color: #999; }
+
+  /* MODAL */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  .modal-content {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90%;
+    overflow-y: auto;
+  }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .close-modal {
+    font-size: 28px;
+    cursor: pointer;
+    color: #999;
+  }
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  .btn-cancel { padding: 8px 16px; background: #9CA3AF; color: white; border: none; border-radius: 6px; cursor: pointer; }
+  .btn-save { padding: 8px 16px; background: #10B981; color: white; border: none; border-radius: 6px; cursor: pointer; }
+  .btn-delete { padding: 8px 16px; background: #EF4444; color: white; border: none; border-radius: 6px; cursor: pointer; }
+
+  .success-modal .modal-content { text-align: center; max-width: 350px; }
+  .success-icon {
+    width: 70px; height: 70px; background: #10B981; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;
+    animation: scaleIn 0.3s ease;
+  }
+  .success-icon svg { width: 40px; height: 40px; }
+  .success-modal h3 { font-size: 24px; color: #333; margin-bottom: 10px; }
+  .success-modal p { color: #666; margin-bottom: 25px; }
+  .success-btn { padding: 10px 30px; background: #10B981; color: white; border: none; border-radius: 8px; cursor: pointer; }
+  @keyframes scaleIn {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  @media (max-width: 768px) {
+    .projects-container { padding: 15px; }
+    .form-row { grid-template-columns: 1fr; gap: 0; }
+    .project-item { flex-direction: column; text-align: center; }
+    .project-actions { justify-content: center; margin-top: 10px; }
+  }
+</style>
+
+<script>
+  import { supabase } from '../../lib/supabase.js';
+
+  let currentProjects = [];
+  let currentEditProjectId = null;
+  let currentDeleteProjectId = null;
+
+  async function loadProjects() {
+    const { data: projects } = await supabase
+      .from('projects')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    currentProjects = projects || [];
+    renderProjects();
+  }
+
+  function renderProjects() {
+    const container = document.getElementById('projects-list');
+    const countSpan = document.getElementById('projects-count');
+    
+    if (!currentProjects.length) {
+      container.innerHTML = '<div class="empty-state">✨ Aucun projet</div>';
+      if (countSpan) countSpan.textContent = '0';
+      return;
+    }
+    
+    if (countSpan) countSpan.textContent = currentProjects.length;
+    
+    container.innerHTML = currentProjects.map(p => `
+      <div class="project-item">
+        <img src="${p.image_url || '/images/placeholder.jpg'}" alt="${escapeHtml(p.title)}" />
+        <div class="project-info">
+          <h4>${escapeHtml(p.title)}</h4>
+          <p><strong>${escapeHtml(p.categorie)}</strong> | ${escapeHtml(p.ville)} | ${escapeHtml(p.annee)}</p>
+          <p>${escapeHtml(p.description?.substring(0, 80))}...</p>
+        </div>
+        <div class="project-actions">
+          <button class="edit-btn" onclick="openEditProjectModal(${p.id})">✏️ Modifier</button>
+          <button class="delete-btn" onclick="openDeleteProjectModal(${p.id})">🗑️ Supprimer</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function uploadImage(file) {
+    const fileName = Date.now() + '_' + file.name;
+    const { error } = await supabase.storage
+      .from('team-photos')
+      .upload('projects/' + fileName, file);
+    if (error) throw error;
+    const { data: { publicUrl } } = supabase.storage
+      .from('team-photos')
+      .getPublicUrl('projects/' + fileName);
+    return publicUrl;
+  }
+
+  // Ajouter
+  document.getElementById('add-project-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const title = document.getElementById('project-title').value;
+    const categorie = document.getElementById('project-category').value;
+    const ville = document.getElementById('project-city').value;
+    const annee = document.getElementById('project-year').value;
+    const description = document.getElementById('project-description').value;
+    const imageFile = document.getElementById('project-image').files[0];
+    
+    if (!title || !categorie) return alert('Titre et catégorie requis');
+    if (!imageFile) return alert('Photo requise');
+    
+    try {
+      const imageUrl = await uploadImage(imageFile);
+      await supabase.from('projects').insert({
+        title, categorie, ville, annee, description, image_url: imageUrl
+      });
+      showSuccessModal('Projet ajouté avec succès !');
+      document.getElementById('add-project-form').reset();
+      loadProjects();
+    } catch (err) {
+      alert('Erreur: ' + err.message);
+    }
+  });
+
+  // Ouvrir modal modification
+  window.openEditProjectModal = async (id) => {
+    const { data: p } = await supabase.from('projects').select('*').eq('id', id).single();
+    if (!p) return;
+    
+    currentEditProjectId = id;
+    document.getElementById('edit-project-id').value = p.id;
+    document.getElementById('edit-project-title').value = p.title || '';
+    document.getElementById('edit-project-category').value = p.categorie || '';
+    document.getElementById('edit-project-city').value = p.ville || '';
+    document.getElementById('edit-project-year').value = p.annee || '';
+    document.getElementById('edit-project-description').value = p.description || '';
+    document.getElementById('edit-project-image').value = '';
+    
+    if (p.image_url) {
+      document.getElementById('current-project-photo').style.display = 'block';
+      document.getElementById('current-project-img').src = p.image_url;
+    } else {
+      document.getElementById('current-project-photo').style.display = 'none';
+    }
+    
+    document.getElementById('edit-project-modal').style.display = 'flex';
+  };
+
+  window.closeEditProjectModal = () => {
+    document.getElementById('edit-project-modal').style.display = 'none';
+    currentEditProjectId = null;
+  };
+
+  window.saveEditProject = async () => {
+    const id = currentEditProjectId;
+    const title = document.getElementById('edit-project-title').value;
+    const categorie = document.getElementById('edit-project-category').value;
+    const ville = document.getElementById('edit-project-city').value;
+    const annee = document.getElementById('edit-project-year').value;
+    const description = document.getElementById('edit-project-description').value;
+    const imageFile = document.getElementById('edit-project-image').files[0];
+    
+    if (!title || !categorie) return alert('Titre et catégorie requis');
+    
+    try {
+      const updateData = { title, categorie, ville, annee, description };
+      if (imageFile) {
+        updateData.image_url = await uploadImage(imageFile);
+      }
+      
+      await supabase.from('projects').update(updateData).eq('id', id);
+      showSuccessModal('Projet modifié avec succès !');
+      closeEditProjectModal();
+      loadProjects();
+    } catch (err) {
+      alert('Erreur: ' + err.message);
+    }
+  };
+
+  // Suppression
+  window.openDeleteProjectModal = (id) => {
+    currentDeleteProjectId = id;
+    document.getElementById('delete-project-modal').style.display = 'flex';
+  };
+
+  window.closeDeleteProjectModal = () => {
+    document.getElementById('delete-project-modal').style.display = 'none';
+    currentDeleteProjectId = null;
+  };
+
+  window.confirmDeleteProject = async () => {
+    if (!currentDeleteProjectId) return;
+    await supabase.from('projects').delete().eq('id', currentDeleteProjectId);
+    showSuccessModal('Projet supprimé avec succès !');
+    closeDeleteProjectModal();
+    loadProjects();
+  };
+
+  function showSuccessModal(message) {
+    const modal = document.getElementById('project-success-modal');
+    const msgSpan = document.getElementById('project-success-message');
+    msgSpan.textContent = message;
+    modal.style.display = 'flex';
+    setTimeout(() => closeProjectSuccessModal(), 2000);
+  }
+
+  window.closeProjectSuccessModal = () => {
+    document.getElementById('project-success-modal').style.display = 'none';
+  };
+
+  // Fermer modals au clic extérieur
+  window.onclick = (e) => {
+    if (e.target === document.getElementById('edit-project-modal')) closeEditProjectModal();
+    if (e.target === document.getElementById('delete-project-modal')) closeDeleteProjectModal();
+    if (e.target === document.getElementById('project-success-modal')) closeProjectSuccessModal();
+  };
+
+  function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // Chargement
+  if (localStorage.getItem('admin') === 'true') {
+    loadProjects();
+  }
+  
+  window.addEventListener('admin-authenticated', () => {
+    loadProjects();
+  });
+</script>

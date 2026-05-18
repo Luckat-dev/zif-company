@@ -1,0 +1,184 @@
+<div id="edit-project-modal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 3l4 4-7 7H10v-4l7-7z"/>
+          <path d="M4 20h16"/>
+        </svg>
+        Modifier le projet
+      </h3>
+      <span class="close-modal" onclick="closeEditProjectModal()">&times;</span>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-project-id" />
+      <div class="form-group"><label>Titre</label><input type="text" id="edit-title" /></div>
+      <div class="form-group"><label>Catégorie</label><input type="text" id="edit-categorie" /></div>
+      <div class="form-row">
+        <div class="form-group"><label>Ville</label><input type="text" id="edit-ville" /></div>
+        <div class="form-group"><label>Année</label><input type="text" id="edit-annee" /></div>
+      </div>
+      <div class="form-group"><label>Description</label><textarea id="edit-description" rows="3"></textarea></div>
+      <div class="form-group"><label>Nouvelle photo</label><input type="file" id="edit-image" accept="image/*" /></div>
+      <small>Laissez vide pour garder la photo actuelle</small>
+      <div id="current-photo-preview" style="margin-top: 10px; display: none;">
+        <label>Photo actuelle :</label>
+        <img id="current-photo-img" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; margin-top: 5px;" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeEditProjectModal()">Annuler</button>
+      <button class="btn-save" onclick="saveEditProject()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+  .form-group { margin-bottom: 15px; }
+  .form-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; color: #333; }
+  .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; font-family: inherit; }
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  .modal-content {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90%;
+    overflow-y: auto;
+  }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .modal-header h3 { display: flex; align-items: center; gap: 8px; font-size: 18px; margin: 0; }
+  .close-modal { font-size: 28px; cursor: pointer; color: #999; }
+  .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+  .btn-cancel { padding: 8px 16px; background: #9CA3AF; color: white; border: none; border-radius: 6px; cursor: pointer; }
+  .btn-save { padding: 8px 16px; background: #10B981; color: white; border: none; border-radius: 6px; cursor: pointer; }
+  @media (max-width: 768px) { .form-row { grid-template-columns: 1fr; gap: 0; } }
+</style>
+
+<script>
+  import { supabase } from '../../lib/supabase';
+
+  let currentEditId = null;
+
+  window.openEditProjectModal = async (id) => {
+    const modal = document.getElementById('edit-project-modal');
+    const modalBody = modal.querySelector('.modal-body');
+    const originalContent = modalBody.innerHTML;
+    
+    modalBody.innerHTML = '<div style="text-align:center;padding:40px;">⏳ Chargement...</div>';
+    modal.style.display = 'flex';
+    
+    try {
+      const { data: p, error } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('id', id)
+        .single();
+      
+      if (error || !p) {
+        window.showNotification('Projet non trouvé', 'error');
+        modal.style.display = 'none';
+        return;
+      }
+      
+      modalBody.innerHTML = originalContent;
+      
+      currentEditId = id;
+      document.getElementById('edit-project-id').value = p.id;
+      document.getElementById('edit-title').value = p.title || '';
+      document.getElementById('edit-categorie').value = p.categorie || '';
+      document.getElementById('edit-ville').value = p.ville || '';
+      document.getElementById('edit-annee').value = p.annee || '';
+      document.getElementById('edit-description').value = p.description || '';
+      document.getElementById('edit-image').value = '';
+      
+      if (p.image_url) {
+        document.getElementById('current-photo-preview').style.display = 'block';
+        document.getElementById('current-photo-img').src = p.image_url;
+      } else {
+        document.getElementById('current-photo-preview').style.display = 'none';
+      }
+      
+    } catch (err) {
+      window.showNotification('Erreur: ' + err.message, 'error');
+      modal.style.display = 'none';
+    }
+  };
+
+  window.closeEditProjectModal = () => {
+    document.getElementById('edit-project-modal').style.display = 'none';
+    currentEditId = null;
+  };
+
+  window.saveEditProject = async () => {
+    const id = currentEditId;
+    if (!id) return;
+    
+    const title = document.getElementById('edit-title').value;
+    const categorie = document.getElementById('edit-categorie').value;
+    const ville = document.getElementById('edit-ville').value;
+    const annee = document.getElementById('edit-annee').value;
+    const description = document.getElementById('edit-description').value;
+    const imageFile = document.getElementById('edit-image').files[0];
+    
+    if (!title || !categorie) {
+      window.showNotification('Titre et catégorie requis', 'error');
+      return;
+    }
+    
+    const saveBtn = document.querySelector('#edit-project-modal .btn-save');
+    const originalText = saveBtn.innerHTML;
+    saveBtn.innerHTML = '⏳ Enregistrement...';
+    saveBtn.disabled = true;
+    
+    try {
+      const updateData = { title, categorie, ville, annee, description };
+      if (imageFile) {
+        const fileName = Date.now() + '_' + imageFile.name;
+        const { error: uploadError } = await supabase.storage
+          .from('team-photos')
+          .upload('projects/' + fileName, imageFile);
+        if (uploadError) throw uploadError;
+        const { data: { publicUrl } } = supabase.storage
+          .from('team-photos')
+          .getPublicUrl('projects/' + fileName);
+        updateData.image_url = publicUrl;
+      }
+      
+      await supabase.from('projects').update(updateData).eq('id', id);
+      window.showNotification('Projet modifié avec succès !', 'success');
+      closeEditProjectModal();
+      
+      // Recharger la liste des projets
+      setTimeout(() => {
+        if (window.loadProjectsList) {
+          window.loadProjectsList();
+        }
+      }, 500);
+      
+    } catch (err) {
+      window.showNotification('Erreur: ' + err.message, 'error');
+    } finally {
+      saveBtn.innerHTML = originalText;
+      saveBtn.disabled = false;
+    }
+  };
+</script>
