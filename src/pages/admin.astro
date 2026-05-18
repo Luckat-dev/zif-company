@@ -212,6 +212,7 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
     const PASSWORD = "ZifAdmin2025";
     
     let supabase = null;
+    let isInitialized = false;
     
     // Charger Supabase depuis CDN
     const script = document.createElement('script');
@@ -219,6 +220,16 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
     script.onload = () => {
       supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
       initAdmin();
+      isInitialized = true;
+      
+      // Si déjà connecté, charger les données après initialisation
+      if (localStorage.getItem('admin') === 'true') {
+        const loginSection = document.getElementById('login-section');
+        const adminSection = document.getElementById('admin-section');
+        if (loginSection) loginSection.style.display = 'none';
+        if (adminSection) adminSection.style.display = 'block';
+        window.loadMembersList();
+      }
     };
     document.head.appendChild(script);
     
@@ -292,7 +303,7 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
         if (localStorage.getItem('admin') === 'true') {
           loginContainer.style.display = 'none';
           adminContainer.style.display = 'block';
-          window.loadMembersList();
+          if (isInitialized) window.loadMembersList();
           setTimeout(() => {
             const event = new CustomEvent('admin-authenticated');
             window.dispatchEvent(event);
@@ -307,7 +318,7 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
           localStorage.setItem('admin', 'true');
           loginContainer.style.display = 'none';
           adminContainer.style.display = 'block';
-          window.loadMembersList();
+          if (isInitialized) window.loadMembersList();
           return true;
         }
         return false;
@@ -320,6 +331,7 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
       
       window.uploadImage = async (file, folder = 'members') => {
         if (!file) return null;
+        if (!supabase) throw new Error('Supabase non initialisé');
         
         const fileName = Date.now() + '_' + file.name;
         const { error } = await supabase.storage
@@ -333,6 +345,7 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
       };
       
       window.loadMembersList = async () => {
+        if (!supabase) return;
         const { data: members } = await supabase
           .from('team')
           .select('*')
@@ -343,6 +356,7 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
       };
       
       window.addMember = async (memberData, photoFile) => {
+        if (!supabase) throw new Error('Supabase non initialisé');
         let photoUrl = null;
         if (photoFile) {
           photoUrl = await window.uploadImage(photoFile, 'members');
@@ -362,6 +376,7 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
       };
       
       window.updateMember = async (id, memberData, photoFile) => {
+        if (!supabase) throw new Error('Supabase non initialisé');
         let photoUrl = null;
         if (photoFile) {
           photoUrl = await window.uploadImage(photoFile, 'members');
@@ -381,6 +396,7 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
       };
       
       window.deleteMember = async (id) => {
+        if (!supabase) return;
         const { error } = await supabase.from('team').delete().eq('id', id);
         if (error) throw error;
         await window.loadMembersList();
@@ -389,6 +405,7 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
       // ========== FONCTIONS PROJETS ==========
       
       window.loadProjectsList = async () => {
+        if (!supabase) return;
         const { data: projects } = await supabase
           .from('projects')
           .select('*')
@@ -399,6 +416,7 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
       };
       
       window.addProject = async (projectData, imageFile) => {
+        if (!supabase) throw new Error('Supabase non initialisé');
         let imageUrl = null;
         if (imageFile) {
           imageUrl = await window.uploadImage(imageFile, 'projects');
@@ -418,6 +436,7 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
       };
       
       window.updateProject = async (id, projectData, imageFile) => {
+        if (!supabase) throw new Error('Supabase non initialisé');
         let imageUrl = null;
         if (imageFile) {
           imageUrl = await window.uploadImage(imageFile, 'projects');
@@ -437,12 +456,11 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
       };
       
       window.deleteProject = async (id) => {
+        if (!supabase) return;
         const { error } = await supabase.from('projects').delete().eq('id', id);
         if (error) throw error;
         if (window.loadProjectsList) await window.loadProjectsList();
       };
-      
-      window.checkAuth();
       
       window.onclick = (e) => {
         const errorModal = document.getElementById('error-modal');
@@ -486,25 +504,11 @@ import DeleteProjectModal from '../components/admin/DeleteProjectModal.astro';
             localStorage.setItem('admin', 'true');
             if (loginSection) loginSection.style.display = 'none';
             if (adminSection) adminSection.style.display = 'block';
-            window.loadMembersList();
-            setTimeout(() => {
-              const event = new CustomEvent('admin-authenticated');
-              window.dispatchEvent(event);
-            }, 100);
+            if (isInitialized) window.loadMembersList();
           } else {
             if (errorMsg) errorMsg.textContent = 'Mot de passe incorrect';
           }
         });
-      }
-      
-      if (localStorage.getItem('admin') === 'true') {
-        if (loginSection) loginSection.style.display = 'none';
-        if (adminSection) adminSection.style.display = 'block';
-        window.loadMembersList();
-        setTimeout(() => {
-          const event = new CustomEvent('admin-authenticated');
-          window.dispatchEvent(event);
-        }, 100);
       }
     }
   });
